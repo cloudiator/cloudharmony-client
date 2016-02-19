@@ -1,0 +1,3644 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://cloudharmony.com",
+  "resourcePath": "/api",
+  "produces": [
+    "application/json",
+    "text/json"
+  ],
+  "authorizations": {  },
+  "apis": [
+    {
+      "path": "/api/availability/{serviceId}",
+      "description": "Get Availability: Returns availability stats for a cloud service. These stats are based on our own independent monitoring of each service. To monitor availability we have accounts and services provisioned with each provider and use <a href=\"http://www.panopta.com\">Panopta to monitor availability</a>. Panopta uses a very accurate multi-node outage verification process that virtually eliminates false outages and thereby provides reliable available metrics. Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. If the response is an empty array, we may not have availability stats for the service yet (check https://cloudharmony.com/status for a list of services and regions that we currently monitor)",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Availability",
+          "notes": "Returns availability stats for a cloud service. These stats are based on our own independent monitoring of each service. To monitor availability we have accounts and services provisioned with each provider and use <a href=\"http://www.panopta.com\">Panopta to monitor availability</a>. Panopta uses a very accurate multi-node outage verification process that virtually eliminates false outages and thereby provides reliable available metrics. Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. If the response is an empty array, we may not have availability stats for the service yet (check https://cloudharmony.com/status for a list of services and regions that we currently monitor)",
+          "nickname": "Get_Availability",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "path",
+              "name": "serviceId",
+              "description": "identifier of the service to return availability stats for - use the 'Get Services' or 'Get Provider' API method for a list of valid IDs",
+              "required": true,
+              "type": "string",
+              "allowMultiple": false
+            },
+            {
+              "paramType": "query",
+              "name": "days",
+              "description": "designates the number of days to return availability for. Default is 90",
+              "required": false,
+              "type": "integer",
+              "defaultValue": 90,
+              "enum": ["7", "14", "30", "60", "90", "180", "365"],
+              "allowMultiple": true
+            },
+            {
+              "paramType": "query",
+              "name": "regions",
+              "description": "if the service is available in multiple regions, this parameter may be used to filter the availability stats returned to only those for specific regions. For CDN and DNS services this parameter may be used to filter based on the location of monitoring nodes (valid options include: global, us_west, us_central, us_east, eu, asia, oceania and africa). For other cloud services it is used to filter based on service region (ServiceRegion::providerCode). For the latter - use the 'Get Service' API method for a list of valid regions",
+              "required": false,
+              "type": "string",
+              "allowMultiple": true
+            },
+            {
+              "paramType": "query",
+              "name": "summarize",
+              "description": "when used, a single ServiceAvailability object will be returned for each time interval and the availability metric will be across multiple regions",
+              "required": false,
+              "type": "boolean",
+              "defaultValue": false,
+              "allowMultiple": false
+            }
+          ],
+          "items": {
+            "type": "ServiceAvailability"
+          },
+          "responseMessages": [
+            {
+              "code": 404,
+              "message": "If the serviceId parameter does not reference a cloud service"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    {
+      "path": "/api/pricing/bandwidth/{serviceId}",
+      "description": "Get Bandwidth Pricing: Returns bandwidth pricing for a cloud service. Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. Returns an empty array if we have not compiled pricing for the service or if pricing is not disclosed. The 'Get Service' API method includeds a 'hasBandwidthPricing' attribute designating whether or not bandwidth pricing is available for that service. The data model for this API method supports tiered and recurring bandwidth pricing models common for many services.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Bandwidth Pricing",
+          "notes": "Returns bandwidth pricing for a cloud service. Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. Returns an empty array if we have not compiled pricing for the service or if pricing is not disclosed. The 'Get Service' API method includeds a 'hasBandwidthPricing' attribute designating whether or not bandwidth pricing is available for that service. The data model for this API method supports tiered and recurring bandwidth pricing models common for many services.",
+          "nickname": "Get_Bandwidth_Pricing",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "path",
+              "name": "serviceId",
+              "description": "identifier of the service to return bandwidth pricing for - use the 'Get Services' or 'Get Provider' API method for a list of valid IDs",
+              "required": true,
+              "type": "string",
+              "allowMultiple": false
+            },
+            {
+              "paramType": "query",
+              "name": "region",
+              "description": "bandwidth pricing for services is often different depending on the region where the service is provisioned in. For example, AWS EC2 is priced differently based on the region the VM is provisioned to. This parameter may be used to filter pricing returned to that of a specific provider region",
+              "required": false,
+              "type": "string",
+              "allowMultiple": false
+            },
+            {
+              "paramType": "query",
+              "name": "endpoint",
+              "description": "some services price bandwidth differently based on where the data goes to. For example, AWS CloudFront bandwidth is priced higher if the client is located in South America or Australia. This parameter may be used to filter pricing to a specific endpoint region. It usually applies only to distributed services (i.e. CDN and DNS). Typically this parameter and 'region' are mutually exclusive and should not be used together in the same request",
+              "required": false,
+              "type": "string",
+              "enum": ["us", "ca", "america", "america_north", "america_central", "america_central_south", "america_south", "eu", "eu_africa", "asia", "jp", "sg", "hk", "oceania", "africa", "in", "cn"],
+              "allowMultiple": false
+            }
+          ],
+          "items": {
+            "type": "BandwidthPricing"
+          },
+          "responseMessages": [
+            {
+              "code": 404,
+              "message": "If the serviceId parameter does not reference a cloud service"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    {
+      "path": "/api/properties/cdn/{serviceId}",
+      "description": "Get CDN Properties: Returns an object representing properties, features and pricing for a content delivery network (CDN). Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. Only CloudService objects of 'type=cdn' can be referenced when invoking this method. If we haven't compiled properties for the CDN yet, this method returns a 404 response",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get CDN Properties",
+          "notes": "Returns an object representing properties, features and pricing for a content delivery network (CDN). Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. Only CloudService objects of 'type=cdn' can be referenced when invoking this method. If we haven't compiled properties for the CDN yet, this method returns a 404 response",
+          "nickname": "Get_CDN_Properties",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "path",
+              "name": "serviceId",
+              "description": "Identifier of the CDN service to return properties for. Use the 'Get Services' or 'Get Provider' API methods for a list of valid IDs. Only CloudService objects with 'type=cdn' can be referenced by this parameter",
+              "required": true,
+              "type": "string",
+              "allowMultiple": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 400,
+              "message": "If the serviceId parameter is valid but does not reference a CDN service"
+            },
+            {
+              "code": 404,
+              "message": "If the serviceId parameter does not reference a cloud service OR if we haven't compiled properties for the CDN service"
+            }
+          ],
+          "type": "CDN_Properties"
+        }
+      ]
+    },
+    {
+      "path": "/api/compute/{serviceId}/{instanceType}",
+      "description": "Get Compute Instance Type: Cloud compute services offer compute instances with different resource settings and features (e.g. CPU, memory, disk). This method returns an object representing the properties, features and pricing for a single type of compute instance. The 'Get Compute Properties' and 'Get Platform Properties' API methods provides lists of all instance types offered for a compute or platform service. Calls to this API method must reference one of those values in the instanceType parameter",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Compute Instance Type",
+          "notes": "Cloud compute services offer compute instances with different resource settings and features (e.g. CPU, memory, disk). This method returns an object representing the properties, features and pricing for a single type of compute instance. The 'Get Compute Properties' and 'Get Platform Properties' API methods provides lists of all instance types offered for a compute or platform service. Calls to this API method must reference one of those values in the instanceType parameter",
+          "nickname": "Get_Compute_Instance_Type",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "path",
+              "name": "serviceId",
+              "description": "Identifier of the compute service that instanceType pertains to. Use the 'Get Services' or 'Get Provider' API methods for a list of valid IDs. Only CloudService objects with 'type=compute' or 'type=paas' can be referenced by this parameter",
+              "required": true,
+              "type": "string",
+              "allowMultiple": false
+            },
+            {
+              "paramType": "path",
+              "name": "instanceType",
+              "description": "Identifier of the compute instance type to return. Use the 'Get Compute Properties' and 'Get Platform Properties' API method for a list of valid values for this parameter",
+              "required": true,
+              "type": "string",
+              "allowMultiple": false
+            },
+            {
+              "paramType": "query",
+              "name": "regions",
+              "description": "compute instance pricing can vary across service regions. By default, this method returns pricing for all regions. If this parameter is set, the pricing returned will be filtered to only the specified region(s)",
+              "required": false,
+              "type": "string",
+              "allowMultiple": true
+            },
+            {
+              "paramType": "query",
+              "name": "operatingSystems",
+              "description": "compute instance pricing may vary for different operating systems. By default, this method returns pricing for all operating systems. If this parameter is set, the pricing returned will be filtered to only the specified operating systems",
+              "required": false,
+              "type": "string",
+              "enum": ["linux", "linux.centos", "linux.debian", "linux.fedora", "linux.gentoo", "linux.rhel", "linux.suse", "linux.ubuntu", "windows", "windows.2008", "windows.2012", "freeBSD"],
+              "allowMultiple": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 400,
+              "message": "If the serviceId parameter is valid but does not reference a compute service"
+            },
+            {
+              "code": 404,
+              "message": "If serviceId or instanceType do not reference a valid compute or platform instance type OR if we haven't yet compiled properties for it"
+            }
+          ],
+          "type": "ComputeInstanceType"
+        }
+      ]
+    },
+    {
+      "path": "/api/properties/compute/{serviceId}",
+      "description": "Get Compute Properties: Returns an object representing properties, features and pricing for a cloud compute service. Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. Only CloudService objects of 'type=compute' can be referenced when invoking this method. If we haven't compiled properties for the compute service yet, this method returns a 404 response",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Compute Properties",
+          "notes": "Returns an object representing properties, features and pricing for a cloud compute service. Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. Only CloudService objects of 'type=compute' can be referenced when invoking this method. If we haven't compiled properties for the compute service yet, this method returns a 404 response",
+          "nickname": "Get_Compute_Properties",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "path",
+              "name": "serviceId",
+              "description": "Identifier of the compute service to return properties for. Use the 'Get Services' or 'Get Provider' API methods for a list of valid IDs. Only CloudService objects with 'type=compute' can be referenced by this parameter",
+              "required": true,
+              "type": "string",
+              "allowMultiple": false
+            },
+            {
+              "paramType": "query",
+              "name": "region",
+              "description": "features and pricing for compute services is often different depending on the service region. This parameter may be used to filter properties returned to only those of a specific provider region",
+              "required": false,
+              "type": "string",
+              "allowMultiple": false
+            }
+          ],
+          "items": {
+            "type": "Compute_Properties"
+          },
+          "responseMessages": [
+            {
+              "code": 400,
+              "message": "If the serviceId parameter is valid but does not reference a compute service"
+            },
+            {
+              "code": 404,
+              "message": "If the serviceId parameter does not reference a cloud service"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    {
+      "path": "/api/properties/dns/{serviceId}",
+      "description": "Get DNS Properties: Returns an object representing properties, features and pricing for a DNS service. Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. Only CloudService objects of 'type=dns' can be referenced when invoking this method. If we haven't compiled properties for the DNS service yet, this method returns a 404 response",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get DNS Properties",
+          "notes": "Returns an object representing properties, features and pricing for a DNS service. Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. Only CloudService objects of 'type=dns' can be referenced when invoking this method. If we haven't compiled properties for the DNS service yet, this method returns a 404 response",
+          "nickname": "Get_DNS_Properties",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "path",
+              "name": "serviceId",
+              "description": "Identifier of the DNS service to return properties for. Use the 'Get Services' or 'Get Provider' API methods for a list of valid IDs. Only CloudService objects with 'type=dns' can be referenced by this parameter",
+              "required": true,
+              "type": "string",
+              "allowMultiple": false
+            }
+          ],
+          "items": {
+            "type": "DNS_Properties"
+          },
+          "responseMessages": [
+            {
+              "code": 400,
+              "message": "If the serviceId parameter is valid but does not reference a DNS service"
+            },
+            {
+              "code": 404,
+              "message": "If the serviceId parameter does not reference a cloud service"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    {
+      "path": "/api/marketshare/{serviceId}",
+      "description": "Get Marketshare: Returns marketshare estimates for a given cloud service based on our marketshare analysis. To capture this information we periodically analyze websites of top Alexa 10k and Fortune 500 organizations and use a variety of techniques to correlate cloud services uses. The correlation techniques includes hotname patterns, IP/CIDR blocks and ASN matching in both primary and related hostnames including in CNAME chains. Known co-branded SaaS sites are excluded",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Marketshare",
+          "notes": "Returns marketshare estimates for a given cloud service based on our marketshare analysis. To capture this information we periodically analyze websites of top Alexa 10k and Fortune 500 organizations and use a variety of techniques to correlate cloud services uses. The correlation techniques includes hotname patterns, IP/CIDR blocks and ASN matching in both primary and related hostnames including in CNAME chains. Known co-branded SaaS sites are excluded",
+          "nickname": "Get_Marketshare",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "path",
+              "name": "serviceId",
+              "description": "Identifier of the service to return marketshare for. Use the 'Get Services' or 'Get Provider' API methods for a list of valid IDs",
+              "required": true,
+              "type": "string",
+              "allowMultiple": false
+            },
+            {
+              "paramType": "query",
+              "name": "listType",
+              "description": "Specific list type to return marketshare analysis for (if not specified, response includes all list types)",
+              "required": false,
+              "type": "string",
+              "enum": ["alexa1000", "alexa10000", "fortune500"],
+              "allowMultiple": false
+            }
+          ],
+          "items": {
+            "type": "MarketshareSnapshot"
+          },
+          "responseMessages": [
+            {
+              "code": 404,
+              "message": "If the serviceId parameter does not reference a cloud service"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    {
+      "path": "/api/outages/{serviceId}",
+      "description": "Get Outages: Returns outages for a cloud service. These are based on our own independent monitoring of each service. To monitor availability we have accounts and services provisioned with each provider and use <a href=\"http://www.panopta.com\">Panopta to monitor availability</a>. Panopta uses a very accurate multi-node outage verification process that virtually eliminates false outages. Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. If the response is an empty array there are no outages for the service, date range and regions specified.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Outages",
+          "notes": "Returns outages for a cloud service. These are based on our own independent monitoring of each service. To monitor availability we have accounts and services provisioned with each provider and use <a href=\"http://www.panopta.com\">Panopta to monitor availability</a>. Panopta uses a very accurate multi-node outage verification process that virtually eliminates false outages. Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. If the response is an empty array there are no outages for the service, date range and regions specified.",
+          "nickname": "Get_Outages",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "format-date",
+              "description": "Format string for dates - valid format options are documented here: http://www.php.net/manual/en/function.date.php",
+              "required": false,
+              "type": "string",
+              "defaultValue": "m/d/Y H:i T"
+            },
+            {
+              "paramType": "query",
+              "name": "use-date-object",
+              "description": "When true, dates will be rendered in response JSON as Date objects instead of strings",
+              "required": false,
+              "type": "boolean",
+              "defaultValue": false
+            },
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "path",
+              "name": "serviceId",
+              "description": "identifier of the service to return outages for use the 'Get Services' or 'Get Provider' API method for a list of valid IDs",
+              "required": true,
+              "type": "string",
+              "allowMultiple": false
+            },
+            {
+              "paramType": "query",
+              "name": "days",
+              "description": "designates the number of days to return outages for. Default is 90",
+              "required": false,
+              "type": "integer",
+              "defaultValue": 90,
+              "enum": ["7", "14", "30", "60", "90", "180", "365"],
+              "allowMultiple": false
+            },
+            {
+              "paramType": "query",
+              "name": "regions",
+              "description": "if the service is available in multiple regions, this parameter may be used to filter the outages returned to only those for specific regions. For CDN and DNS services this parameter may be used to filter based on the location of monitoring nodes (valid options include: global, us_west, us_central, us_east, eu, asia, oceania and africa). For other cloud services it is used to filter based on service region (ServiceRegion::providerCode). For the latter - use the 'Get Service' API method for a list of valid regions",
+              "required": false,
+              "type": "string",
+              "allowMultiple": true
+            }
+          ],
+          "items": {
+            "type": "ServiceOutage"
+          },
+          "responseMessages": [
+            {
+              "code": 404,
+              "message": "If the serviceId parameter does not reference a cloud service"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    {
+      "path": "/api/properties/paas/{serviceId}",
+      "description": "Get Platform Properties: Returns an object representing properties, features and pricing for a platform as a service (PaaS). Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. Only CloudService objects of 'type=paas' can be referenced when invoking this method. If we haven't compiled properties for the PaaS yet, this method returns a 404 response",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Platform Properties",
+          "notes": "Returns an object representing properties, features and pricing for a platform as a service (PaaS). Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. Only CloudService objects of 'type=paas' can be referenced when invoking this method. If we haven't compiled properties for the PaaS yet, this method returns a 404 response",
+          "nickname": "Get_Platform_Properties",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "format-date",
+              "description": "Format string for dates - valid format options are documented here: http://www.php.net/manual/en/function.date.php",
+              "required": false,
+              "type": "string",
+              "defaultValue": "m/d/Y H:i T"
+            },
+            {
+              "paramType": "query",
+              "name": "use-date-object",
+              "description": "When true, dates will be rendered in response JSON as Date objects instead of strings",
+              "required": false,
+              "type": "boolean",
+              "defaultValue": false
+            },
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "path",
+              "name": "serviceId",
+              "description": "Identifier of the PaaS to return properties for. Use the 'Get Services' or 'Get Provider' API methods for a list of valid IDs. Only CloudService objects with 'type=paas' can be referenced by this parameter",
+              "required": true,
+              "type": "string",
+              "allowMultiple": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 400,
+              "message": "If the serviceId parameter is valid but does not reference a PaaS"
+            },
+            {
+              "code": 404,
+              "message": "If the serviceId parameter does not reference a cloud service OR if we haven't compiled properties for the PaaS"
+            }
+          ],
+          "type": "Platform_Properties"
+        }
+      ]
+    },
+    {
+      "path": "/api/provider/{providerId}",
+      "description": "Get Provider: Returns information about a specific cloud provider. Use the 'Get Providers' API method for valid providerId parameter values",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Provider",
+          "notes": "Returns information about a specific cloud provider. Use the 'Get Providers' API method for valid providerId parameter values",
+          "nickname": "Get_Provider",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "path",
+              "name": "providerId",
+              "description": "Identifier of the provider to return - use the 'Get Providers' API method for a list of valid IDs",
+              "required": true,
+              "type": "string",
+              "allowMultiple": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 404,
+              "message": "If the providerId parameter is not valid"
+            }
+          ],
+          "type": "CloudProvider"
+        }
+      ]
+    },
+    {
+      "path": "/api/providers",
+      "description": "Get Providers: Returns a list of valid cloud provider identifiers (i.e. providerId)",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Providers",
+          "notes": "Returns a list of valid cloud provider identifiers (i.e. providerId)",
+          "nickname": "Get_Providers",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "query",
+              "name": "serviceTypes",
+              "description": "only include providers that offer all of these types services",
+              "required": false,
+              "type": "string",
+              "enum": ["compute", "storage", "cdn", "dns", "paas", "dbaas"],
+              "allowMultiple": true
+            },
+            {
+              "paramType": "query",
+              "name": "regions",
+              "description": "only return providers that offer services in all these geographical regions. For CDN and DNS services this signifies presence of a POP. For other cloud services it signifies data centers",
+              "required": false,
+              "type": "string",
+              "enum": ["us", "us_northeast", "us_northeast_newengland", "us_northeast_midatlantic", "us_midwest", "us_midwest_eastnorthcentral", "us_midwest_westnorthcentral", "us_south", "us_south_southatlantic", "us_south_eastsouthcentral", "us_south_westsouthcentral", "us_west", "us_west_mountain", "us_west_pacific", "us_east", "us_central", "ca", "usca", "eu", "eu_north", "eu_west", "eu_central", "eu_east", "eu_south", "eu_africa", "asia", "asia_apac", "asia_east", "asia_centralwest", "asia_southeast", "asia_south", "jp", "oceania", "in", "america", "america_north", "america_central", "america_central_south", "america_south", "africa", "global"],
+              "allowMultiple": true
+            }
+          ],
+          "type": "IDList"
+        }
+      ]
+    },
+    {
+      "path": "/api/service/{serviceId}",
+      "description": "Get Service: Returns information about a cloud service. Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Service",
+          "notes": "Returns information about a cloud service. Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values",
+          "nickname": "Get_Service",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "path",
+              "name": "serviceId",
+              "description": "identifier of the service to return - use the 'Get Services' or 'Get Provider' API method for a list of valid IDs",
+              "required": true,
+              "type": "string",
+              "allowMultiple": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 404,
+              "message": "If the serviceId parameter does not reference a cloud service"
+            }
+          ],
+          "type": "CloudService"
+        }
+      ]
+    },
+    {
+      "path": "/api/services",
+      "description": "Get Services: Returns a list of valid cloud service identifiers (i.e. serviceId)",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Services",
+          "notes": "Returns a list of valid cloud service identifiers (i.e. serviceId)",
+          "nickname": "Get_Services",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "query",
+              "name": "serviceTypes",
+              "description": "only include services of this type",
+              "required": false,
+              "type": "string",
+              "enum": ["compute", "storage", "cdn", "dns", "paas", "dbaas"],
+              "allowMultiple": true
+            },
+            {
+              "paramType": "query",
+              "name": "regions",
+              "description": "only return services available in this geographical region. For CDN and DNS services this signifies presence of a POP. For other cloud services it signifies data centers",
+              "required": false,
+              "type": "string",
+              "enum": ["us", "us_northeast", "us_northeast_newengland", "us_northeast_midatlantic", "us_midwest", "us_midwest_eastnorthcentral", "us_midwest_westnorthcentral", "us_south", "us_south_southatlantic", "us_south_eastsouthcentral", "us_south_westsouthcentral", "us_west", "us_west_mountain", "us_west_pacific", "us_east", "us_central", "ca", "usca", "eu", "eu_north", "eu_west", "eu_central", "eu_east", "eu_south", "eu_africa", "asia", "asia_apac", "asia_east", "asia_centralwest", "asia_southeast", "asia_south", "jp", "oceania", "in", "america", "america_north", "america_central", "america_central_south", "america_south", "africa", "global"],
+              "allowMultiple": true
+            }
+          ],
+          "type": "IDList"
+        }
+      ]
+    },
+    {
+      "path": "/api/status",
+      "description": "Get Status: Returns the current availability status for cloud services. This status is based on our own independent monitoring of each service. To monitor availability we have accounts and services provisioned with each provider and use <a href=\"http://www.panopta.com\">Panopta to monitor availability</a>. Panopta uses an accurate multi-node outage verification process that virtually eliminates false outages and thereby provides reliable status metrics. Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. If the response is an empty array, we may not have availability monitoring for the service yet (check https://cloudharmony.com/status for a list of services and regions that we currently monitor)",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Status",
+          "notes": "Returns the current availability status for cloud services. This status is based on our own independent monitoring of each service. To monitor availability we have accounts and services provisioned with each provider and use <a href=\"http://www.panopta.com\">Panopta to monitor availability</a>. Panopta uses an accurate multi-node outage verification process that virtually eliminates false outages and thereby provides reliable status metrics. Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. If the response is an empty array, we may not have availability monitoring for the service yet (check https://cloudharmony.com/status for a list of services and regions that we currently monitor)",
+          "nickname": "Get_Status",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "query",
+              "name": "serviceIds",
+              "description": "identifiers of the services to return availability status for - use the 'Get Services' or 'Get Provider' API method for a list of valid IDs",
+              "required": true,
+              "type": "string",
+              "allowMultiple": true
+            },
+            {
+              "paramType": "query",
+              "name": "regions",
+              "description": "if the service is available in multiple regions, this parameter may be used to filter the availability status returned to only those of specific regions. For CDN and DNS services this parameter may be used to filter based on the location of monitoring nodes (valid options include: global, us_west, us_central, us_east, eu, asia, oceania and africa). For other cloud services it is used to filter based on service region (ServiceRegion::providerCode). For the latter - use the 'Get Service' API method for a list of valid regions",
+              "required": false,
+              "type": "string",
+              "allowMultiple": true
+            },
+            {
+              "paramType": "query",
+              "name": "mergeRegions",
+              "description": "whether or not to combine status records for the same service in multiple regions into a single record. If set the 'region' attribute will be null and the 'status' attribute will be set to 'down' if all regions are down, 'partial' if at least 1 region is down, 'maintenance' if at least 1 region is in maintenance status, and 'up' only if all regions are up",
+              "required": false,
+              "type": "boolean",
+              "defaultValue": false,
+              "allowMultiple": false
+            }
+          ],
+          "items": {
+            "type": "ServiceStatus"
+          },
+          "type": "array"
+        }
+      ]
+    },
+    {
+      "path": "/api/properties/storage/{serviceId}",
+      "description": "Get Storage Properties: Returns an object representing properties, features and pricing for cloud storage. Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. Unlike other 'Get * Properties' methods, this method can be invoked for any service type because multiple service types can have associated storage properties (e.g. compute and block storage). If we haven't compiled properties for the storage properties yet, this method returns a 404 response",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Storage Properties",
+          "notes": "Returns an object representing properties, features and pricing for cloud storage. Use the 'Get Services' and 'Get Providers' API methods for valid serviceId parameter values. Unlike other 'Get * Properties' methods, this method can be invoked for any service type because multiple service types can have associated storage properties (e.g. compute and block storage). If we haven't compiled properties for the storage properties yet, this method returns a 404 response",
+          "nickname": "Get_Storage_Properties",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "path",
+              "name": "serviceId",
+              "description": "Identifier of the service to return storage properties for. Use the 'Get Services' or 'Get Provider' API methods for a list of valid IDs",
+              "required": true,
+              "type": "string",
+              "allowMultiple": false
+            },
+            {
+              "paramType": "query",
+              "name": "region",
+              "description": "features and pricing for cloud storage are often different depending on the service region. This parameter may be used to filter properties returned to only those of a specific provider region",
+              "required": false,
+              "type": "string",
+              "allowMultiple": false
+            }
+          ],
+          "items": {
+            "type": "Storage_Properties"
+          },
+          "responseMessages": [
+            {
+              "code": 404,
+              "message": "If the serviceId parameter does not reference a cloud service"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    {
+      "path": "/api/identify/{ipOrHostname}",
+      "description": "Identify Services: Attempts to associate an IP address or hostname to cloud service(s). If successful, this method returns an array of object containing the identifiers of the provider, service and optionally region that ipOrHostname pertains to as well as the method used to make the correlation (e.g. IP/CIDR, CNAME, ASN, ISP, etc.)",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Identify Services",
+          "notes": "Attempts to associate an IP address or hostname to cloud service(s). If successful, this method returns an array of object containing the identifiers of the provider, service and optionally region that ipOrHostname pertains to as well as the method used to make the correlation (e.g. IP/CIDR, CNAME, ASN, ISP, etc.)",
+          "nickname": "GET_Identify_Services",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "path",
+              "name": "ipOrHostname",
+              "description": "The IP address, hostname or URL to attempt to identify service for",
+              "required": true,
+              "type": "string",
+              "allowMultiple": false
+            },
+            {
+              "paramType": "query",
+              "name": "serviceType",
+              "description": "(optional) when set, only services of this type will be evaluated",
+              "required": false,
+              "type": "string",
+              "enum": ["compute", "storage", "cdn", "dns", "paas", "dbaas"],
+              "allowMultiple": false
+            }
+          ],
+          "items": {
+            "type": "NetworkIdentifier"
+          },
+          "responseMessages": [
+            {
+              "code": 404,
+              "message": "If ipOrHostname could not be associated to any cloud service"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    {
+      "path": "/api/network/{serviceId}",
+      "description": "Get Network Identifiers: Returns the network identifiers we've compiled for a given cloud service. These may include multiple types of identifiers including IP/CIDR blocks, ASNs, known CNAMEs, ISP and organization names (based on MaxMind identfiers). CNAME, ISP and organization name identifiers may be specified as a regular expression",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Network Identifiers",
+          "notes": "Returns the network identifiers we've compiled for a given cloud service. These may include multiple types of identifiers including IP/CIDR blocks, ASNs, known CNAMEs, ISP and organization names (based on MaxMind identfiers). CNAME, ISP and organization name identifiers may be specified as a regular expression",
+          "nickname": "Get_Network_Identifiers",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "path",
+              "name": "serviceId",
+              "description": "Identifier of the service to return network identifiers for. Use the 'Get Services' or 'Get Provider' API methods for a list of valid IDs",
+              "required": true,
+              "type": "string",
+              "allowMultiple": false
+            }
+          ],
+          "items": {
+            "type": "NetworkIdentifier"
+          },
+          "responseMessages": [
+            {
+              "code": 404,
+              "message": "If ipOrHostname could not be associated to any cloud service"
+            }
+          ],
+          "type": "array"
+        }
+      ]
+    },
+    {
+      "path": "/api/search/{q}",
+      "description": "Search: Returns search record representing compute instance types, service regions, services, providers and/or service types based on the search term specified. For example, if the search query was 'amazon', the return value would include Amazon EC2, Amazon Route 53, Amazon Web Services (provider), Compute, DNS, etc. The order of search results is service types (e.g. Compute, PaaS), providers (e.g. Amazon Web Services), services (e.g. Amazon EC2), service regions ([service] - [region]), compute instances ([service] - [instance type])",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Search",
+          "notes": "Returns search record representing compute instance types, service regions, services, providers and/or service types based on the search term specified. For example, if the search query was 'amazon', the return value would include Amazon EC2, Amazon Route 53, Amazon Web Services (provider), Compute, DNS, etc. The order of search results is service types (e.g. Compute, PaaS), providers (e.g. Amazon Web Services), services (e.g. Amazon EC2), service regions ([service] - [region]), compute instances ([service] - [instance type])",
+          "nickname": "GET_Search",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "callback",
+              "description": "A JSON-P callback function to pad the response with (response is the first function argument). This parameter is added automatically by jQuery (i.e. jQuery.ajax, jQuery.getJSON) to work around cross site scripting (XSS) restrictions. <strong>Don't use this in the API sandbox</strong>",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "paramType": "path",
+              "name": "q",
+              "description": "string $q The search term to evaluate (required)",
+              "required": true,
+              "type": "string",
+              "allowMultiple": false
+            },
+            {
+              "paramType": "query",
+              "name": "include",
+              "description": "(optional) use to filter search records based on a specific type",
+              "required": false,
+              "type": "string",
+              "enum": ["compute_instance", "provider", "service", "service_region", "service_type"],
+              "allowMultiple": true
+            },
+            {
+              "paramType": "query",
+              "name": "exclude",
+              "description": "(optional) use to exclude specific types of search records",
+              "required": false,
+              "type": "string",
+              "enum": ["compute_instance", "provider", "service", "service_region", "service_type"],
+              "allowMultiple": true
+            },
+            {
+              "paramType": "query",
+              "name": "serviceTypes",
+              "description": "only include search records of this service type (note: provider type records will be included for providers with at least 1 service of this type)",
+              "required": false,
+              "type": "string",
+              "enum": ["compute", "storage", "cdn", "dns", "paas", "dbaas"],
+              "allowMultiple": true
+            },
+            {
+              "paramType": "query",
+              "name": "webProbesOnly",
+              "description": "if set, the return value will only contain records for which at least 1 publicly access web probe is available",
+              "required": false,
+              "type": "boolean",
+              "defaultValue": false,
+              "allowMultiple": false
+            },
+            {
+              "paramType": "query",
+              "name": "excludeSingleService",
+              "description": "if set, services will be removed if they are the only service of the provider they pertain to",
+              "required": false,
+              "type": "boolean",
+              "defaultValue": false,
+              "allowMultiple": false
+            }
+          ],
+          "items": {
+            "type": "SearchRecord"
+          },
+          "type": "array"
+        }
+      ]
+    }
+  ],
+  "models": {
+    "CDN_Properties": {
+      "id": "CDN_Properties",
+      "description": "Represents the properties, features and pricing for a content delivery network (CDN)",
+      "required": [
+        "currency",
+        "priceInterval",
+        "routingMethod",
+        "serviceId"
+      ],
+      "properties": {
+        "accessLimits": {
+          "description": "Does the provider support limiting access to content? Typically enabled using access tokens or validation webhooks",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "accessLimitsPrice": {
+          "description": "If the CDN supports access limits, and charges an extra fee to use it, this property designates the amount of that fee. If set, price interval defines the billing frequency for this fee",
+          "required": false,
+          "type": "number"
+        },
+        "cdnId": {
+          "description": "Unique identifier for the record",
+          "required": false,
+          "type": "string"
+        },
+        "comment": {
+          "description": "Our comments about these CDN properties",
+          "required": false,
+          "type": "string"
+        },
+        "contentPull": {
+          "description": "In order to serve your content, a CDN must be able to access it. With content pull, the CDN edge pulls content from an HTTP accessible origin you maintain. This is also referred to as Reverse Proxy. It is the easiest and most common method supported by CDNs. A CDN will either support this or content push (or both)",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "contentPush": {
+          "description": "In order to serve your content, a CDN must be able to access it. With content push, the CDN provides a means (FTP, SCP, rsync, etc.) for you to upload content to a storage repository. This is also referred to as Edge Storage. This method is useful if you cannot (or do not desire to) maintain an HTTP origin server for your content. A CDN will either support this or content pull (or both)",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "currency": {
+          "description": "The currency for any pricing designated by these properties",
+          "required": true,
+          "defaultValue": "USD",
+          "enum": ["USD", "GBP", "EUR", "AUD", "CAD", "NZD", "PLN", "CHF", "JPY"],
+          "type": "string"
+        },
+        "edgePurging": {
+          "description": "Does the CDN allow you to manually remove or replace cached content before it expires? By default content is cached until a designated expiry time (set manually or via origin 'expires' headers). Expiry times for content may vary on different CDN edge servers. Edge purge is useful when you need to quickly remove or replace cached content from all CDN edge servers",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "edgeStoragePrice": {
+          "description": "If the CDN supports content push/edge storage, and charges a storage fee for its use, this property designates the amount of that fee per gigabyte. If set, the price interval defines the billing frequency for this fee. Alternatively, the storage service property may designate a separate storage service that facilitates edge storage and designates the associated costs (e.g. AWS CloudFront/S3)",
+          "required": false,
+          "type": "number"
+        },
+        "estimatedPops": {
+          "description": "This property is set if the provider does not disclose the exact locations of the CDN points of presence (also referred to as POPs or edge servers), but has disclosed their numbers. Akamai is a prime example",
+          "required": false,
+          "type": "integer"
+        },
+        "logAccess": {
+          "description": "Does the CDN support access to federated server access logs? These are logs that have been compiled from all CDN edge servers where your content was accessed and stored on a user accessible storage platform",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "priceInterval": {
+          "description": "If the provider charges extra fees for any of the features described by these properties, this designates how often that fee is assessed. Most commonly these fees are monthly",
+          "required": true,
+          "defaultValue": "hour",
+          "enum": ["hour", "day", "month", "year", "minute", "second"],
+          "type": "string"
+        },
+        "routingMethod": {
+          "description": "A CDN is a geographically distributed network of servers you can use to host web content. To improve performance, a CDN attempts to fulfill each request using an edge server that is physically or topologically close to the user it originates from. This property refers to the methods used by the CDN to make this determination. We independently analyze each CDN to determine the methods used. A CDN may employ multiple methods. The following are supported:<ul><li><em>Edge Anycast</em> allows a CDN to share a single IP address on multiple edge servers and automatically route users to the server that is topologically closest. When properly configured, Anycast edge routing provides many advantages over DNS including consistent optimal edge server selection, improved reliability due to quicker failover, and elimination of DNS dependencies. However, due to the cost and complexity of properly setting up and maintaining Anycast networks, is a less common method. Additionally, Anycast routing is often less reliable in less established Internet regions including Asia and South America.</li><li><em>DNS</em>: The Domain Name System (DNS) resolves a textual hostname like www.google.com to a unique numeric address required by computers to communicate. A CDN may use DNS to route user requests to nearby edge servers by resolving your CDN hostname (e.g. cdn.mydomain.com) differently depending on where the user is located. This is the most common method for CDN edge routing because it is relatively easy to setup and administer. However, exclusive use of DNS edge routing can be prone to accuracy, reliability and performance issues. DNS edge routing relies on use of a Geo IP database to correlate IP addresses to geographical location, and these databases are often inaccurate. Additionally, the IP address the CDN sees for a DNS query is that of an intermediary DNS resolver (often belonging to the user's ISP) and not that of the user. The location of the user's DNS resolver - the basis by which edge routing decisions are made - may not be the same as the user. This discrepency can result in the user being routed to a more distant edge server. Reliability issues can also arise due to DNS caching. If a CDN edge server is taken out of service, users with cached DNS may continue to attempt to connect to it. To minimize DNS caching problems, a CDN may set low DNS cache times (e.g. 30 secs - 1 min as opposed to typical 1 hour+). However, doing so will require users to query DNS more frequently which can impact performance.</li><li><em>EDNS</em> is an extension to the Domain Name System that allows intermediary DNS resolvers to include the user's IP address when submitting DNS queries. If supported, the CDN may use this information to determine the user's location (as opposed to that of the DNS resolver) in order to more accurately choose the closest CDN edge server. Because EDNS is new, support is still limited, but the largest public DNS services - Google Public DNS and OpenDNS - now support it.</li><li><em>Proprietary</em>: Some CDN services use proprietary methods for edge server routing. These are often used in conjunction with standard DNS routing.</li><li><em>Anycast DNS</em>: The Domain Name System (DNS) resolves a textual hostname like www.google.com to a unique numeric address required by computers to communicate. Anycast routing allows multiple servers to share a single IP address and automatically route users to the server that is topologically closest. Use of Anycast DNS means resolving your CDN hostname (e.g. cdn.mydomain.com) to an edge server IP address will be generally fast and reliable. Anycast DNS is fairly ubiquitous for CDNs, only minimally improves performance, and should not be confused with the much less common use of edge Anycast which impacts performance more significantly.</li></ul>",
+          "required": true,
+          "enum": ["edge-anycast", "dns-anycast", "dns", "edns", "proprietary"],
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "routingMethodComment": {
+          "description": "Our comments about the CDN service routing methods",
+          "required": false,
+          "type": "string"
+        },
+        "serviceId": {
+          "description": "ID of the service these properties pertain to",
+          "required": true,
+          "type": "string"
+        },
+        "sslCustomDomainIp": {
+          "description": "Does the CDN support traditional SSL content delivery using dedicated IPv4 addresses? This is often costly due to the number of IP addresses needed for each hostname",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "sslCustomDomainSni": {
+          "description": "Does the CDN support SNI based SSL content delivery? SNI is a newer SSL hosting method that allows a service to assign multiple SSL certificates to a single IP address. This reduces the associated costs, provisioning complexity and maintenance. However, SNI based SSL is not supported by older browsers",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "sslGenericDomain": {
+          "description": "Does the CDN support SSL content delivery using a generic domain name? This is a common feature allowing you to deliver content over SSL without purchasing an SSL certificate and paying extra for custom SSL",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "sslIpPrice": {
+          "description": "The price per hostname for SSL content delivery via dedicated IP addresses - if supported",
+          "required": false,
+          "type": "number"
+        },
+        "sslSniPrice": {
+          "description": "The price per hostname for SSL content delivery via SNI - if supported",
+          "required": false,
+          "type": "number"
+        },
+        "storageService": {
+          "description": "If the service supports content push/edge storage, this property may designate a separate storage service used to host your content",
+          "required": false,
+          "type": "string"
+        }
+      }
+    },
+    "CloudProvider": {
+      "id": "CloudProvider",
+      "description": "Cloud providers are organizations that offer one or more cloud services: CDN, Compute, Database, DNS, PaaS or Storage",
+      "required": [
+        "name",
+        "website"
+      ],
+      "properties": {
+        "countries": {
+          "description": "The countries where this provider has a presence - either data centers or POPs",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "description": {
+          "description": "Our description of this provider",
+          "required": false,
+          "type": "string"
+        },
+        "fortune500Rank": {
+          "description": "If this provider is a Fortune 500 company, this attribute defines its Fortune 500 rank",
+          "required": false,
+          "type": "integer"
+        },
+        "hasWebProbe": {
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "link": {
+          "description": "The URL we use to link to this cloud provider (if different from the website URL)",
+          "required": false,
+          "type": "string"
+        },
+        "name": {
+          "description": "Name of the cloud provider",
+          "required": true,
+          "type": "string"
+        },
+        "notes": {
+          "description": "Notes we've compiled about this provider",
+          "required": false,
+          "type": "string"
+        },
+        "outageContacts": {
+          "description": "Newline separated list of contacts to use for outage notifications. Format is 'email' or 'name <email>'",
+          "required": false,
+          "type": "string"
+        },
+        "providerId": {
+          "description": "Unique identifier of this provider",
+          "required": false,
+          "type": "string"
+        },
+        "regions": {
+          "description": "The regions where this provider has a presence - either data centers or POPs",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "serviceIds": {
+          "description": "Identifiers (i.e. serviceId) of the services this provider offers - array indexes are the same as serviceTypes",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "serviceTypes": {
+          "description": "Types of clouds services this provider offers - array indexes are the same as serviceIds",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "shortName": {
+          "description": "An optional short or abbreviated name we use for this provider",
+          "required": false,
+          "type": "string"
+        },
+        "website": {
+          "description": "URL to this provider's website",
+          "required": true,
+          "type": "string"
+        }
+      }
+    },
+    "CloudService": {
+      "id": "CloudService",
+      "description": "Cloud services are computing resources (hardware and software) provided as a service over a network. These services include compute instances, storage, Internet content delivery, managed DNS, application and database hosting (platform-as-a-service / database-as-a-service)",
+      "required": [
+        "name",
+        "providerId",
+        "type"
+      ],
+      "properties": {
+        "beta": {
+          "description": "Is this cloud service currently designated beta or pre-release by the provider?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "hasBandwidthPricing": {
+          "description": "Is bandwidth pricing available for this service?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "hasDnsPricing": {
+          "description": "Is DNS pricing available for this service?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "hasStorageOptions": {
+          "description": "Are storage options available for this (compute) service?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "hasWebProbe": {
+          "description": "Does this cloud service have at least 1 public web probe? Web probes are used for the cloud network test",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "hasWebProbeSsl": {
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "link": {
+          "description": "The URL we use to link to this cloud service (if different from the website URL)",
+          "required": false,
+          "type": "string"
+        },
+        "name": {
+          "description": "Name of the cloud service",
+          "required": true,
+          "type": "string"
+        },
+        "notes": {
+          "description": "Notes we've compiled about this service",
+          "required": false,
+          "type": "string"
+        },
+        "outageContacts": {
+          "description": "Newline separated list of contacts to use for outage notifications. Format is 'email' or 'name <email>'. If specified, overrides the provider contacts",
+          "required": false,
+          "type": "string"
+        },
+        "pricingComment": {
+          "description": "Our comments about pricing for this service",
+          "required": false,
+          "type": "string"
+        },
+        "providerId": {
+          "description": "ID of the cloud provider this service is offered by",
+          "required": true,
+          "type": "string"
+        },
+        "regions": {
+          "description": "The regions where this service is available. For CDN and DNS services this signifies presence of a POP. For other cloud services it signifies data centers",
+          "required": false,
+          "items": {
+            "type": "ServiceRegion"
+          },
+          "type": "array"
+        },
+        "regionsComment": {
+          "description": "Our comments about service regions",
+          "required": false,
+          "type": "string"
+        },
+        "serviceId": {
+          "description": "Unique identifier of this service",
+          "required": false,
+          "type": "string"
+        },
+        "shortName": {
+          "description": "An optional short or abbreviated name we use for this service",
+          "required": false,
+          "type": "string"
+        },
+        "sla": {
+          "description": "The SLA (Service Level Agreement) for this cloud service represented as a percentage (e.g. 99.999%)",
+          "required": false,
+          "type": "number"
+        },
+        "slaDescription": {
+          "description": "Description given by the provider for the service SLA",
+          "required": false,
+          "type": "string"
+        },
+        "slaLink": {
+          "description": "URL to the provider's SLA documentation for this service - if available",
+          "required": false,
+          "type": "string"
+        },
+        "type": {
+          "description": "The type of cloud service: CDN, Compute, Database, DNS, PaaS or Storage",
+          "required": true,
+          "enum": ["compute", "storage", "cdn", "dns", "paas", "dbaas"],
+          "type": "string"
+        },
+        "website": {
+          "description": "URL to the service website",
+          "required": false,
+          "type": "string"
+        }
+      }
+    },
+    "ComputeInstanceTypePrice": {
+      "id": "ComputeInstanceTypePrice",
+      "description": "Represents a pricing model associated with a compute instance type",
+      "required": [
+        "billInterval",
+        "currency",
+        "price",
+        "priceInterval",
+        "serviceId"
+      ],
+      "properties": {
+        "billInterval": {
+          "description": "The minimum time interval used for billing - this may be different from the price interval (e.g. priced per month but billed per hour)",
+          "required": true,
+          "defaultValue": "hour",
+          "enum": ["hour", "day", "month", "year", "minute", "second"],
+          "type": "string"
+        },
+        "bwIncluded": {
+          "description": "The amount of Internet bandwidth in GB included at this price. Overage pricing should be defined using a Service Bandwidth Pricing record",
+          "required": false,
+          "type": "integer"
+        },
+        "currency": {
+          "description": "The currency this pricing is based on",
+          "required": true,
+          "enum": ["USD", "GBP", "EUR", "AUD", "CAD", "NZD", "PLN", "CHF", "JPY"],
+          "type": "string"
+        },
+        "label": {
+          "description": "Pricing label - used to group similar pricing models across multiple compute instance types - must be unique for each service and instance type",
+          "required": false,
+          "type": "string"
+        },
+        "normalizedPrice": {
+          "description": "The total hourly price for the compute instance - the fields contains Price normalized to an hourly rate. For term pricing, the setup cost is added to the normalized hourly price for the duration of the term",
+          "required": false,
+          "type": "number"
+        },
+        "normalizedTerm": {
+          "description": "The Term normalized to months (if applicable)",
+          "required": false,
+          "type": "number"
+        },
+        "notes": {
+          "description": "Notes and observations about this pricing from CloudHarmony",
+          "required": false,
+          "type": "string"
+        },
+        "operatingSystems": {
+          "description": "The operating systems this pricing record pertains to",
+          "required": false,
+          "enum": ["linux", "linux.centos", "linux.debian", "linux.fedora", "linux.gentoo", "linux.rhel", "linux.suse", "linux.ubuntu", "windows", "windows.2008", "windows.2012", "freeBSD"],
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "osLicenseExcluded": {
+          "description": "Does pricing exclude the cost of operating system licensing (for commercial operating systems only)? If true, and users intend to use a paid operating system such as Windows or RHEL, additional licensing costs will be required",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "price": {
+          "description": "The recurring price (per occurrence of price interval)",
+          "required": true,
+          "type": "number"
+        },
+        "priceInterval": {
+          "description": "The time interval for the price - the amount designated by price is charged for each occurence of this time interval",
+          "required": true,
+          "defaultValue": "hour",
+          "enum": ["hour", "day", "month", "year", "minute", "second"],
+          "type": "string"
+        },
+        "regions": {
+          "description": "If pricing is tied to specific provider regions - these are the identifiers of those regions (one region code per line)",
+          "required": false,
+          "type": "string"
+        },
+        "serviceId": {
+          "description": "ID of the compute service this pricing pertains to",
+          "required": true,
+          "type": "string"
+        },
+        "setup": {
+          "description": "Setup fee for this pricing model - optional",
+          "required": false,
+          "type": "number"
+        },
+        "templateCpuCorePrice": {
+          "description": "If the compute instance is a template - how much of Price is for the designated number of CPU cores. If there is a charge for the OS, this can be designated by in Price (Price - Template CPU Core Price - Template Memory Price)",
+          "required": false,
+          "type": "number"
+        },
+        "templateMemoryPrice": {
+          "description": "If the compute instance is a template - how much of Price is for the designated amount of memory. If there is a charge for the OS, this can be designated by in Price (Price - Template CPU Core Price - Template Memory Price)",
+          "required": false,
+          "type": "number"
+        },
+        "term": {
+          "description": "If the provider requires a term commitment, this defines how long the recurring pricing is available once a contract is initiated (used often in conjunction with a setup fee) - optional",
+          "required": false,
+          "type": "integer"
+        },
+        "termInterval": {
+          "description": "The time interval for the term (e.g. month, year) - optional",
+          "required": false,
+          "enum": ["month", "year"],
+          "type": "string"
+        },
+        "termMinUsage": {
+          "description": "If the pricing is term based, and the provider requires a minimum usage commitment, this defines the minimum usage required as a percentage of the term interval - customers will be billed for this usage regardless of whether or not a compute instance is used - optional",
+          "required": false,
+          "type": "number"
+        },
+        "turnedOffDiscount": {
+          "description": "Percentage of the recurring price discounted if a compute instance is turned off. For example - if 0, user pays full price regardless of whether instance is on or off. If empty, provider does not support turning instances off - optional",
+          "required": false,
+          "type": "number"
+        },
+        "volumeDiscountMinTerm": {
+          "description": "The minimum term (months) for volume discounts (if applicable) - meaning customers must commit to a minimum monthly-spend for this many months in order to be eligible for the volume discounts",
+          "required": false,
+          "type": "integer"
+        },
+        "volumeDiscountMinTermAlt": {
+          "description": "An alternate minimum term (months) for volume discounts (if applicable)",
+          "required": false,
+          "type": "integer"
+        },
+        "volumeDiscountMinTermAltOffset": {
+          "description": "The discount offset if the alternate minimum term is used",
+          "required": false,
+          "type": "number"
+        },
+        "volumeDiscountTermPrepayDiscount": {
+          "description": "Additional discount percentage when monthly-spend is pre-paid for the entire term (based on the Volume Discount Min Term)",
+          "required": false,
+          "type": "number"
+        },
+        "volumeDiscountTier1": {
+          "description": "The minimum monthly invoice amount where a first tier volume discount is applied",
+          "required": false,
+          "type": "number"
+        },
+        "volumeDiscountTier1Price": {
+          "description": "Volume discount (percentage) of the price for tier 1 volume - if null, discount data is not disclosed (customers should contact the provider)",
+          "required": false,
+          "type": "number"
+        },
+        "volumeDiscountTier1Setup": {
+          "description": "Volume discount (percentage) of the setup for tier 1 volume - if null, discount data is not disclosed (customers should contact the provider)",
+          "required": false,
+          "type": "number"
+        },
+        "volumeDiscountTier2": {
+          "description": "The minimum monthly invoice amount where a second tier volume discount is applied",
+          "required": false,
+          "type": "number"
+        },
+        "volumeDiscountTier2Price": {
+          "description": "Volume discount (percentage) of the price for tier 2 volume - if null, discount data is not disclosed (customers should contact the provider)",
+          "required": false,
+          "type": "number"
+        },
+        "volumeDiscountTier2Setup": {
+          "description": "Volume discount (percentage) of the setup for tier 2 volume - if null, discount data is not disclosed (customers should contact the provider)",
+          "required": false,
+          "type": "number"
+        },
+        "volumeDiscountTier3": {
+          "description": "The minimum monthly invoice amount where a third tier volume discount is applied",
+          "required": false,
+          "type": "number"
+        },
+        "volumeDiscountTier3Price": {
+          "description": "Volume discount (percentage) of the price for tier 3 volume - if null, discount data is not disclosed (customers should contact the provider)",
+          "required": false,
+          "type": "number"
+        },
+        "volumeDiscountTier3Setup": {
+          "description": "Volume discount (percentage) of the setup for tier 3 volume - if null, discount data is not disclosed (customers should contact the provider)",
+          "required": false,
+          "type": "number"
+        }
+      }
+    },
+    "ComputeInstanceType": {
+      "id": "ComputeInstanceType",
+      "description": "Represents a unique compute instance configuration available for deployment within a compute service",
+      "required": [
+        "cpuCores",
+        "instanceId",
+        "memory",
+        "name",
+        "operatingSystems",
+        "serviceId"
+      ],
+      "properties": {
+        "cpuCores": {
+          "description": "The number of CPU cores allocated for this compute instance",
+          "required": true,
+          "type": "number"
+        },
+        "cpuModel": {
+          "description": "Optional CPU model for this compute instance - if explicitely disclosed by the provider (e.g. Intel Xeon E5-2620)",
+          "required": false,
+          "type": "string"
+        },
+        "cpuSockets": {
+          "description": "The number of CPU sockets for this compute instance - if explicitely disclosed by the provider - cores per CPU can be determined by dividing CPU Cores by CPU Sockets",
+          "required": false,
+          "type": "integer"
+        },
+        "instanceId": {
+          "description": "Identifier used by the cloud provider to refer to this compute instance type - this value is unique for the associated compute service",
+          "required": true,
+          "type": "string"
+        },
+        "legacy": {
+          "description": "Is this instance type considered legacy or previous generation (not recommended for new deployments)",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "localDiskRaid": {
+          "description": "Hardware raid level used for the local disks - if instance type includes hardware raid controller and provider discloses this information",
+          "required": false,
+          "type": "integer"
+        },
+        "localDiskRpm": {
+          "description": "Spindle RPM for local disks - if explicitely disclosed by the provider",
+          "required": false,
+          "type": "integer"
+        },
+        "localDiskType": {
+          "description": "Type of local disk used - if explicitely disclosed by the provider (e.g. SSD, SAS, SATA)",
+          "required": false,
+          "enum": ["sata", "sas", "ssd", "scsi", "pcie"],
+          "type": "string"
+        },
+        "localDisks": {
+          "description": "Number of local storage disks allocated to this compute instance - if applicable (storage per disk = localStorage/localDisks)",
+          "required": false,
+          "type": "integer"
+        },
+        "localStorage": {
+          "description": "Amount of local storage in gigabytes included with this compute instance (across all disks) - if applicable",
+          "required": false,
+          "type": "number"
+        },
+        "maxVolumes": {
+          "description": "If the service allows for multiple storage volumes to be attached to a compute instance - this defines the maximum number of such volumes. It may override the same setting for related storage services",
+          "required": false,
+          "type": "integer"
+        },
+        "maxVolumesWindows": {
+          "description": "If Max Volumes is different for windows - this may designate that difference",
+          "required": false,
+          "type": "integer"
+        },
+        "memory": {
+          "description": "The amount of memory in gigabytes allocated for this compute instance",
+          "required": true,
+          "type": "number"
+        },
+        "name": {
+          "description": "The name of this compute instance type (as it is referred to by the provider)",
+          "required": true,
+          "type": "string"
+        },
+        "networkLink": {
+          "description": "Optional network link speed designation (Mb/s) for the compute instance - applicable only when the provider sets and defines this characteristic",
+          "required": false,
+          "type": "integer"
+        },
+        "networkLinkDedicated": {
+          "description": "Is the network link dedicated for the compute instance (otherwise shared with other VMs on the same host)",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "notes": {
+          "description": "Notes and observations about this compute instance type from CloudHarmony",
+          "required": false,
+          "type": "string"
+        },
+        "operatingSystems": {
+          "description": "Operating systems supported by this compute instance",
+          "required": true,
+          "enum": ["linux", "linux.centos", "linux.debian", "linux.fedora", "linux.gentoo", "linux.rhel", "linux.suse", "linux.ubuntu", "windows", "windows.2008", "windows.2012", "freeBSD"],
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "pricing": {
+          "description": "Pricing details for this compute instance ordered by the normalized hourly price",
+          "required": false,
+          "items": {
+            "type": "ComputeInstanceTypePrice"
+          },
+          "type": "array"
+        },
+        "quantityAvailable": {
+          "description": "If the provider has a limited quanity of compute instances of this type available - this is the number available",
+          "required": false,
+          "type": "integer"
+        },
+        "regions": {
+          "description": "Optional identifiers of specific regions where this compute instance is available (if it is not available in all regions designated for the compute service - one region code per line)",
+          "required": false,
+          "type": "string"
+        },
+        "serviceId": {
+          "description": "References the id of the compute service this compute instance is available within",
+          "required": true,
+          "type": "string"
+        },
+        "template": {
+          "description": "Is this compute instance type a template? Template instance types allow for definition of a single instance type that can scale up to a max capacity. Pricing associated with a compute instance template is linearly scalable. The template Instance ID and Name should use the dynamic strings {cpu} and {memory} which will be automatically replaced with the associated values. CPU Cores and Memory should represent the minimum configuration and pricing should be based on them.",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "templateMaxCpuCores": {
+          "description": "The max CPU cores for a compute instance template",
+          "required": false,
+          "type": "number"
+        },
+        "templateMaxMemory": {
+          "description": "The max memory for a compute instance template",
+          "required": false,
+          "type": "number"
+        },
+        "unavailable": {
+          "description": "Is this compute instance type currently unavailable (e.g. out of stock or discontinued)?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        }
+      }
+    },
+    "Compute_Properties": {
+      "id": "Compute_Properties",
+      "description": "Represents the properties, features and pricing for a cloud compute service",
+      "required": [
+        "currency",
+        "priceInterval",
+        "serviceId"
+      ],
+      "properties": {
+        "comment": {
+          "description": "Our comments about these service properties",
+          "required": false,
+          "type": "string"
+        },
+        "computeServiceId": {
+          "description": "Unique identifier for the record - typically the same as the service ID unless there are multiple",
+          "required": false,
+          "type": "string"
+        },
+        "currency": {
+          "description": "The currency for any pricing designated by these properties",
+          "required": true,
+          "defaultValue": "USD",
+          "enum": ["USD", "GBP", "EUR", "AUD", "CAD", "NZD", "PLN", "CHF", "JPY"],
+          "type": "string"
+        },
+        "firewall": {
+          "description": "Does the compute service provide a user manageable firewall?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "firewallForwardPrice": {
+          "description": "If the provider charges a fee per firewall port opening, this designates that fee. If set, price interval defines the billing frequency for this fee",
+          "required": false,
+          "type": "number"
+        },
+        "instanceTypeNames": {
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "instanceTypes": {
+          "description": "The instance types supported by this compute service. Each value is a unique instance type identifier that either the provider or we have defined. For services with independent CPU/memory selections, we use a ratio of 2X memory (gigabytes) to CPU cores to define this list (up to max possible CPU cores or memory - e.g. 1 core/2GB, 2 cores/4GB...16 cores/32GB)",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "ipv4PerVm": {
+          "description": "Does the compute service provide at least one free IPv4 address per compute instance?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "ipv4Price": {
+          "description": "The price for each extra IPv4 address assigned to a compute instance",
+          "required": false,
+          "type": "number"
+        },
+        "ipv4Subnet25Price": {
+          "description": "If the provider supports allocation of /25 IPv4 subnets (128 addresses), this is the associated fee. If set, price interval defines the billing frequency for this fee",
+          "required": false,
+          "type": "number"
+        },
+        "ipv4Subnet26Price": {
+          "description": "If the provider supports allocation of /26 IPv4 subnets (64 addresses), this is the associated fee. If set, price interval defines the billing frequency for this fee",
+          "required": false,
+          "type": "number"
+        },
+        "ipv4Subnet27Price": {
+          "description": "If the provider supports allocation of /27 IPv4 subnets (32 addresses), this is the associated fee. If set, price interval defines the billing frequency for this fee",
+          "required": false,
+          "type": "number"
+        },
+        "ipv4Subnet28Price": {
+          "description": "If the provider supports allocation of /28 IPv4 subnets (16 addresses), this is the associated fee. If set, price interval defines the billing frequency for this fee",
+          "required": false,
+          "type": "number"
+        },
+        "ipv4Subnet29Price": {
+          "description": "If the provider supports allocation of /29 IPv4 subnets (8 addresses), this is the associated fee. If set, price interval defines the billing frequency for this fee",
+          "required": false,
+          "type": "number"
+        },
+        "ipv4Subnet30Price": {
+          "description": "If the provider supports allocation of /30 IPv4 subnets (4 addresses), this is the associated fee. If set, price interval defines the billing frequency for this fee",
+          "required": false,
+          "type": "number"
+        },
+        "ipv4Subnet31Price": {
+          "description": "If the provider supports allocation of /31 IPv4 subnets (2 addresses), this is the associated fee. If set, price interval defines the billing frequency for this fee",
+          "required": false,
+          "type": "number"
+        },
+        "ipv4Subnet32Price": {
+          "description": "If the provider supports allocation of /32 IPv4 subnets (1 address), this is the associated fee. If set, price interval defines the billing frequency for this fee",
+          "required": false,
+          "type": "number"
+        },
+        "ipv4TurnedOffPrice": {
+          "description": "The price for IPv4 addresses that are not assigned to assigned to compute instances that are powered down (if applicable)",
+          "required": false,
+          "type": "number"
+        },
+        "ipv6": {
+          "description": "Does the compute service support IPv6 networking?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "ipv6PerVm": {
+          "description": "Does the compute service provide at least one free IPv6 address per compute instance?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "ipv6Price": {
+          "description": "The price for use of each (additional) IPv6 address",
+          "required": false,
+          "type": "number"
+        },
+        "ipv6Subnet64Price": {
+          "description": "If the provider supports allocation of /64 IPv6 subnets, this is the associated fee. If set, price interval defines the billing frequency for this fee",
+          "required": false,
+          "type": "number"
+        },
+        "ipv6TurnedOffPrice": {
+          "description": "The price for IPv6 addresses that are not assigned to assigned to compute instances that are powered down (if applicable)",
+          "required": false,
+          "type": "number"
+        },
+        "loadBalancing": {
+          "description": "Does the compute service support network load balancing?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "loadBalancingHealthChecks": {
+          "description": "Does the service support health checks and automatic failover in conjunction with load balancing?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "loadBalancingPrice": {
+          "description": "The price for load balancing",
+          "required": false,
+          "type": "number"
+        },
+        "loadBalancingTrafficPrice": {
+          "description": "If the provider charges an extra fee for load balanced network traffic - this designates the amount of that fee per gigabyte (GB)",
+          "required": false,
+          "type": "number"
+        },
+        "multiIp": {
+          "description": "Does compute service allow you to assign multiple IP addresses to a single compute instance?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "name": {
+          "description": "The name for this compute service",
+          "required": false,
+          "type": "string"
+        },
+        "priceInterval": {
+          "description": "If the provider charges extra fees for any of the features described by these properties, this designates how often that fee is assessed. Most commonly these fees are hourly",
+          "required": true,
+          "defaultValue": "hour",
+          "enum": ["hour", "day", "month", "year", "minute", "second"],
+          "type": "string"
+        },
+        "regions": {
+          "description": "If these compute service properties pertain to specific service regions - these are the identifiers of those regions (one region per line)",
+          "required": false,
+          "type": "string"
+        },
+        "resizing": {
+          "description": "Does the compute service allow instances to be resized after they have been provisioned?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "serviceId": {
+          "description": "ID of the compute service this record pertains to",
+          "required": true,
+          "type": "string"
+        },
+        "snapshotsCold": {
+          "description": "Does the compute service support cold snapshots (i.e. snapshots taken when the compute instance is powered off)?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "snapshotsHot": {
+          "description": "Does the compute service support hot snapshots (i.e. snapshots taken when the compute instance is powered on)?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "snapshotsPrice": {
+          "description": "Price per GB for storage volume snapshots",
+          "required": false,
+          "type": "number"
+        },
+        "storageMaxSize": {
+          "description": "The maximum size per storage volume in terrebytes",
+          "required": false,
+          "type": "number"
+        },
+        "storageMaxVolumes": {
+          "description": "The maximum number of storage volumes that can be attached to a compute instance (if a limit exists)",
+          "required": false,
+          "type": "integer"
+        },
+        "storagePrice": {
+          "description": "Price per GB  for compute instance storage",
+          "required": false,
+          "type": "number"
+        },
+        "vpc": {
+          "description": "Does the compute service support virtual private cloud (VPC)? VPC allows users to create and deploy compute instances to logically or physically isolated networks",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "vpcPrice": {
+          "description": "The price for each VPC network",
+          "required": false,
+          "type": "number"
+        },
+        "vpcVpn": {
+          "description": "Does the compute service support VPN connectivity to VPC networks?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "vpcVpnPrice": {
+          "description": "The price for site-to-site VPN connections to service VPC networks (if supported)",
+          "required": false,
+          "type": "number"
+        }
+      }
+    },
+    "Database_Properties": {
+      "id": "Database_Properties",
+      "description": "Represents the properties, features and pricing for a cloud database service",
+      "required": [
+        "billInterval",
+        "currency",
+        "databaseType",
+        "dbServiceId",
+        "price",
+        "priceInterval",
+        "pricingMethods",
+        "serviceId"
+      ],
+      "properties": {
+        "billInterval": {
+          "description": "The time interval used for billing (may be more granular than the priceInterval)",
+          "required": true,
+          "defaultValue": "month",
+          "enum": ["hour", "day", "month", "year", "minute", "second"],
+          "type": "string"
+        },
+        "comment": {
+          "description": "Comment about this database service from CloudHarmony",
+          "required": false,
+          "type": "string"
+        },
+        "cpu": {
+          "description": "Description of CPU resources allocated - applicable to 'resource' pricing methods only",
+          "required": false,
+          "type": "string"
+        },
+        "currency": {
+          "description": "The currency the database pricing is based on",
+          "required": true,
+          "defaultValue": "USD",
+          "enum": ["USD", "GBP", "EUR", "AUD", "CAD", "NZD", "PLN", "CHF", "JPY"],
+          "type": "string"
+        },
+        "databaseType": {
+          "description": "The type of database (e.g. MySQL, PostgreSQL)",
+          "required": true,
+          "enum": ["couchdb", "mongodb", "mssql", "mysql", "oracle", "postgresql", "other-nosql", "other-rdbms", "redis"],
+          "type": "string"
+        },
+        "dbServiceId": {
+          "description": "Unique identifier for the record - typically the same as the service ID unless there are multiple",
+          "required": true,
+          "type": "string"
+        },
+        "highAvailability": {
+          "description": "Does the service support high availability features like clustering, replicas, read-only slaves at this pricing tier?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "label": {
+          "description": "Pricing label - a short descriptor of the pricing model",
+          "required": false,
+          "type": "string"
+        },
+        "maxConnections": {
+          "description": "The maximum number of server connections allowed at this pricing tier - applicable to 'resource' pricing methods only",
+          "required": false,
+          "type": "integer"
+        },
+        "maxDatabases": {
+          "description": "The maximum number of unique databases that may be created at this pricing tier (null for unlimited)",
+          "required": false,
+          "type": "integer"
+        },
+        "memory": {
+          "description": "Memory resources (gigabytes) allocated at this pricing tier - applicable to 'resource' pricing methods only",
+          "required": false,
+          "type": "number"
+        },
+        "multiTenant": {
+          "description": "Are the database servers shared with multiple users at this pricing tier (as opposed to dedicated)?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "networkLimit": {
+          "required": false,
+          "type": "number"
+        },
+        "normalizedPrice": {
+          "description": "The total hourly price - calculated by combining price and setup normalized to an hourly rate (setup normalized to the term specified)",
+          "required": false,
+          "type": "number"
+        },
+        "numberOfHosts": {
+          "description": "The number of clustered or master/slave hosts used at this pricing tier (>1 generally implies better high availability)",
+          "required": false,
+          "type": "integer"
+        },
+        "opsIncluded": {
+          "description": "Number of operations (of any type) included at this pricing tier - applicable to 'metered' pricing methods only",
+          "required": false,
+          "type": "integer"
+        },
+        "platformServices": {
+          "description": "Service IDs referencing platform services that this database is available for as an add-on",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "price": {
+          "description": "Price for this database usage tier - this amount is billed for usage every price interval (billing interval may be different)",
+          "required": true,
+          "type": "number"
+        },
+        "priceInterval": {
+          "description": "Time interval for the price - the amount designated by price is charged for each occurence of this time interval",
+          "required": true,
+          "defaultValue": "month",
+          "enum": ["hour", "day", "month", "year", "minute", "second"],
+          "type": "string"
+        },
+        "pricePer100kOps": {
+          "description": "The price for 100,000 database operations - used when provider does not distinguish between operation type (i.e. read and write ops are the same) - applicable to 'metered' pricing methods only",
+          "required": false,
+          "type": "number"
+        },
+        "pricePer100kReadOps": {
+          "description": "The price for 100,000 database read operations - applicable to 'metered' pricing methods only",
+          "required": false,
+          "type": "number"
+        },
+        "pricePer100kSmallOps": {
+          "description": "The price for 100,000 database small operations (e.g. count) - applicable to 'metered' pricing methods only",
+          "required": false,
+          "type": "number"
+        },
+        "pricePer100kWriteOps": {
+          "description": "The price for 100,000 database write operations - applicable to 'metered' pricing methods only",
+          "required": false,
+          "type": "number"
+        },
+        "priceScaling": {
+          "description": "Does the price scale linearly? Meaning, 2X price (and setup) will provide 2X of the applicable resources (based on the pricing methods)",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "priceScalingCap": {
+          "description": "If the price scales linearly, what is the maximum multiples of price (and thus maximum resources) supported?",
+          "required": false,
+          "type": "integer"
+        },
+        "pricingMethods": {
+          "description": "The pricing method(s) used for the database service - resources (cpu, memory, networkLimit, maxConnections, numberOfHosts, readCache), storage (rowLimit, storageIncluded, storageLimit, storageOveragePrice), metered (opsIncluded, pricePer100kOps, pricePer100kReadOps, pricePer100kSmallOps, pricePer100kWriteOps), or throughput (throughput, throughputInterval, throughputPerRecord, throughputPrice, throughputPriceInterval, throughputRead, throughputReadPrice, throughputRecordSize, throughputWrite, throughputWritePrice) - a database service may use 1 or more pricing methods",
+          "required": true,
+          "enum": ["metered", "resources", "storage", "throughput"],
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "readCache": {
+          "description": "The amount of in-memory read cache (megabytes) is provided at this pricing tier - applicable to 'resource' pricing methods only",
+          "required": false,
+          "type": "integer"
+        },
+        "regions": {
+          "description": "If pricing is tied to specific provider regions - these are the identifiers of those regions (one region code per line)",
+          "required": false,
+          "type": "string"
+        },
+        "rowLimit": {
+          "description": "Number of rows included for the monthly price at this pricing tier - applicable to 'storage' pricing methods only",
+          "required": false,
+          "type": "integer"
+        },
+        "rowsIncluded": {
+          "description": "The number of rows included for the monthly price at this pricing tier - applicable to 'storage' pricing methods only",
+          "required": false,
+          "type": "integer"
+        },
+        "rowsOverage": {
+          "description": "Price per 100k additional rows above what is included at the base price (cost for 100k rows above the included amount - based on the same price interval) - applicable to 'storage' pricing methods only",
+          "required": false,
+          "type": "number"
+        },
+        "serviceId": {
+          "description": "ID of the service this database is associated with - either a DbaaS or PaaS",
+          "required": true,
+          "type": "string"
+        },
+        "setup": {
+          "description": "Setup fee for this pricing model - optional",
+          "required": false,
+          "type": "number"
+        },
+        "storageIncluded": {
+          "description": "The amount of storage in gigabytes included for the monthly price at this pricing tier - applicable to 'storage' pricing methods only",
+          "required": false,
+          "type": "number"
+        },
+        "storageLimit": {
+          "description": "The maximum storage in gigabytes that may be used at this pricing tier - applicable to 'storage' pricing methods only, and only when overage is supported",
+          "required": false,
+          "type": "number"
+        },
+        "storageOveragePrice": {
+          "description": "Price per gigabyte of database storage/month above what is included at the base price (cost for storage above the included amount - based on the same price interval) - applicable to 'storage' pricing methods only",
+          "required": false,
+          "type": "number"
+        },
+        "term": {
+          "description": "If the provider requires a term commitment, this defines how long the recurring pricing is available once a contract is initiated (used often in conjunction with a setup fee) - optional",
+          "required": false,
+          "type": "integer"
+        },
+        "termInterval": {
+          "description": "The time interval for the term (e.g. month, year) - optional",
+          "required": false,
+          "enum": ["month", "year"],
+          "type": "string"
+        },
+        "throughput": {
+          "description": "Used in place of throughputRead and throughputWrite if provider does not distinguish between type of operation - applicable to 'throughput' pricing methods only",
+          "required": false,
+          "type": "integer"
+        },
+        "throughputInterval": {
+          "description": "The time interval at which the provisioned read and write throughput limits are applied - applicable to 'throughput' pricing methods only",
+          "required": false,
+          "enum": ["hour", "day", "month", "year", "minute", "second"],
+          "type": "string"
+        },
+        "throughputPerRecord": {
+          "description": "Is throughput calculated based on number of records involved in a request (as opposed to number of requests)? - applicable to 'throughput' pricing methods only",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "throughputPrice": {
+          "description": "Price for read and write throughput - used when provider does not distinguish between operation types - applicable to 'throughput' pricing methods only",
+          "required": false,
+          "type": "number"
+        },
+        "throughputPriceInterval": {
+          "description": "The time interval at which the provisioned read and write throughput prices are applied - applicable to 'throughput' pricing methods only",
+          "required": false,
+          "enum": ["hour", "day", "month", "year", "minute", "second"],
+          "type": "string"
+        },
+        "throughputRead": {
+          "description": "The number of provisioned read operations allowed at the throughput interval designated - applicable to 'throughput' pricing methods only",
+          "required": false,
+          "type": "integer"
+        },
+        "throughputReadIncluded": {
+          "description": "Amount of read throughput included at this pricing tier - applicable to 'throughput' pricing methods only",
+          "required": false,
+          "type": "integer"
+        },
+        "throughputReadPrice": {
+          "description": "Price for the read throughput designated",
+          "required": false,
+          "type": "number"
+        },
+        "throughputRecordSize": {
+          "description": "The record size in kilobytes to use when calculating throughput requirements - used if throughput is per record (as opposed to per request) - applicable to 'throughput' pricing methods only",
+          "required": false,
+          "type": "number"
+        },
+        "throughputWrite": {
+          "description": "The number of provisioned write operations allowed at the throughput interval designated - applicable to 'throughput' pricing methods only",
+          "required": false,
+          "type": "integer"
+        },
+        "throughputWriteIncluded": {
+          "description": "Amount of write throughput included at this pricing tier - applicable to 'throughput' pricing methods only",
+          "required": false,
+          "type": "integer"
+        },
+        "throughputWritePrice": {
+          "description": "Price for the write throughput designated",
+          "required": false,
+          "type": "number"
+        }
+      }
+    },
+    "DNS_Properties": {
+      "id": "DNS_Properties",
+      "description": "Represents the properties, features and pricing for a DNS service",
+      "required": [
+        "currency",
+        "dnsServiceId",
+        "name",
+        "serviceId"
+      ],
+      "properties": {
+        "currency": {
+          "description": "The currency this pricing is based on",
+          "required": true,
+          "defaultValue": "USD",
+          "enum": ["USD", "GBP", "EUR", "AUD", "CAD", "NZD", "PLN", "CHF", "JPY"],
+          "type": "string"
+        },
+        "dnsServiceId": {
+          "description": "Unique identifier for the record - typically the same as the service ID unless there are multiple",
+          "required": true,
+          "type": "string"
+        },
+        "dnssecManagement": {
+          "description": "Method used by provider for supporting Domain Name Security Extensions/DNSSEC management (if supported) - if empty, service does not support DNSSEC",
+          "required": false,
+          "enum": ["provider", "user"],
+          "type": "string"
+        },
+        "healthChecksMinInterval": {
+          "description": "The minimum interval in minutes that is supported for health checks",
+          "required": false,
+          "type": "number"
+        },
+        "healthFailoverComment": {
+          "description": "Optional comment by CloudHarmony about this provider's health check failover feature",
+          "required": false,
+          "type": "string"
+        },
+        "healthFailoverName": {
+          "description": "Name used by provider to refer to health checking failover feature (if applicable) - if empty, service does not support this feature",
+          "required": false,
+          "type": "string"
+        },
+        "healthFailoverPrice": {
+          "description": "Monthly price (per record) for use of the health checks failover feature",
+          "required": false,
+          "type": "number"
+        },
+        "healthLoadBalancingComment": {
+          "description": "Optional comment by CloudHarmony about this provider's health check load balancing feature",
+          "required": false,
+          "type": "string"
+        },
+        "healthLoadBalancingName": {
+          "description": "Name used by provider to refer to health checking load balancing feature (if applicable) - if empty, service does not support this feature",
+          "required": false,
+          "type": "string"
+        },
+        "healthLoadBalancingPrice": {
+          "description": "Monthly price (per record) for use of the health checks load balancing feature",
+          "required": false,
+          "type": "number"
+        },
+        "monthlyZoneHostingFee": {
+          "description": "The monthly fee charged for each zone hosted by the DNS service (if provider charges per zone monthly fee)",
+          "required": false,
+          "type": "number"
+        },
+        "monthlyZoneHostingFeeComment": {
+          "description": "Optional comment by CloudHarmony about this provider's monthly zone hosting fee",
+          "required": false,
+          "type": "string"
+        },
+        "name": {
+          "description": "Name for this DNS pricing - unique for a service",
+          "required": true,
+          "type": "string"
+        },
+        "notes": {
+          "description": "Custom notes and observations about this pricing from CloudHarmony",
+          "required": false,
+          "type": "string"
+        },
+        "pricing": {
+          "description": "Represents pricing for use of this DNS service",
+          "required": false,
+          "items": {
+            "type": "DNS_PricingTier"
+          },
+          "type": "array"
+        },
+        "primaryXfrSupport": {
+          "description": "If this DNS service supports operating as a Primary - this field designates whether it supports NOTIFY (primary to secondary change notification), AXFR (full zone transfer), IXFR (incremental zone transfer) and TSIG (Transaction SIGnature). At a minimum, if supported, this field will designate AXFR (polling) support",
+          "required": false,
+          "enum": ["notify", "axfr", "ixfr", "tsig"],
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "routingLocationBasedComment": {
+          "description": "Optional comment by CloudHarmony about this provider's location based routing feature",
+          "required": false,
+          "type": "string"
+        },
+        "routingLocationBasedEdns": {
+          "description": "Does location based routing support EDNS (IP forwarding from the name server)?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "routingLocationBasedName": {
+          "description": "Name used by provider to refer to location based routing (uses Geo IP lookup) feature (if applicable) - if empty, service does not support this feature",
+          "required": false,
+          "type": "string"
+        },
+        "routingLocationBasedPrice": {
+          "description": "Monthly price (per record) for use of the location based routing feature - if priced by query volume, will be defined using separate pricing tiers for this query type",
+          "required": false,
+          "type": "number"
+        },
+        "routingZoneBasedComment": {
+          "description": "Optional comment by CloudHarmony about this provider's zone based routing feature",
+          "required": false,
+          "type": "string"
+        },
+        "routingZoneBasedName": {
+          "description": "Name used by provider to refer to zone based routing (uses Anycast IP zones) feature (if applicable) - if empty, service does not support this feature",
+          "required": false,
+          "type": "string"
+        },
+        "routingZoneBasedPrice": {
+          "description": "Monthly price (per record) for use of the zone based routing feature - if priced by query volume, will be defined using separate pricing tiers for this query type",
+          "required": false,
+          "type": "number"
+        },
+        "secondaryXfrSupport": {
+          "description": "If this DNS service supports operating as a Secondary - this field designates whether it supports NOTIFY (change notifications from primary), AXFR (full zone transfer), IXFR (incremental zone transfer) and TSIG (Transaction SIGnature). At a minimum, if supported, this field will designate AXFR (polling) support",
+          "required": false,
+          "enum": ["notify", "axfr", "ixfr", "tsig"],
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "serviceId": {
+          "description": "ID of the DNS service this pricing pertains to - a DNS service may have multiple pricing structures",
+          "required": true,
+          "type": "string"
+        }
+      }
+    },
+    "DNS_PricingTier": {
+      "id": "DNS_PricingTier",
+      "description": "Represents the price for 1 million DNS queries - optionally tiered based on volume",
+      "required": [
+      ],
+      "properties": {
+        "cap": {
+          "description": "Maximum blocks of 1 million DNS queries at which this price is billed (if usage exceeds this amount, the next highest tier is billed) - if null, this is the highest usage tier",
+          "required": false,
+          "type": "number"
+        },
+        "capText": {
+          "description": "User friendly text for Cap (e.g. 1 billion)",
+          "required": false,
+          "type": "string"
+        },
+        "comment": {
+          "description": "Comment about this pricing tier from CloudHarmony",
+          "required": false,
+          "type": "string"
+        },
+        "maxResourceRecords": {
+          "description": "The maximum number of resource records permitted for this price",
+          "required": false,
+          "type": "integer"
+        },
+        "monthlyFee": {
+          "description": "Optional monthly fee charged for this usage tier (in addition to query usage charges)",
+          "required": false,
+          "type": "number"
+        },
+        "planName": {
+          "description": "The name of this DNS price plan",
+          "required": false,
+          "type": "string"
+        },
+        "price": {
+          "description": "The price for 1 million DNS queries at this usage tier (or overage for plan based pricing) - if null, pricing data is not disclosed (customers should contact the provider)",
+          "required": false,
+          "type": "number"
+        },
+        "priceText": {
+          "description": "User friendly text for Price - may be used to display price ranges when price may vary depending on other factors (e.g. $865-1200)",
+          "required": false,
+          "type": "string"
+        },
+        "queryType": {
+          "description": "Optional specialized type of query that this pricing tier applies to",
+          "required": false,
+          "enum": ["geo", "location-based-routing", "zone-based-routing", "failover"],
+          "type": "string"
+        },
+        "zonesAllowed": {
+          "description": "If the provider couples zones (domains) to pricing tiers - this is the number of zones included for free with this pricing tier",
+          "required": false,
+          "type": "integer"
+        }
+      }
+    },
+    "IDList": {
+      "id": "IDList",
+      "description": "Provides a list of IDs",
+      "required": [
+      ],
+      "properties": {
+        "ids": {
+          "description": "An array of identifiers (e.g. providerId or serviceId)",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      }
+    },
+    "MarketshareSnapshot": {
+      "id": "MarketshareSnapshot",
+      "description": "Summarized marketshare for a specific type of list (e.g. Alexa 10k, Fortune 500), cloud service type (e.g. CDN, DNS, compute) and snapshot date. This object contains a list of services and their associated marketshare totals within the list on the date the snapshot was taken.",
+      "required": [
+        "listDate",
+        "listName",
+        "listSize",
+        "listType",
+        "marketshare",
+        "marketshareChanges",
+        "percentages",
+        "ranks",
+        "serviceType",
+        "services",
+        "servicesIncluded",
+        "snapshotDate"
+      ],
+      "properties": {
+        "listDate": {
+          "description": "The date that this list was compiled. For Alexa, this is the date that the list was downloaded. For Fortune 500, this is June 1 of the year the list pertains to (e.g. 6/1/2014 = Fortune 500 2014)",
+          "required": true,
+          "format": "date",
+          "type": "string"
+        },
+        "listName": {
+          "description": "The name of the list this marketshare summary pertains to",
+          "required": true,
+          "type": "string"
+        },
+        "listSize": {
+          "description": "The total number of hostnames/companies in the list",
+          "required": true,
+          "type": "integer"
+        },
+        "listType": {
+          "description": "The type of list this snapshot pertains to: Alexa 1k, Alexa 10k or Fortune 500",
+          "required": true,
+          "enum": ["alexa1000", "alexa10000", "fortune500"],
+          "type": "string"
+        },
+        "marketshare": {
+          "description": "Array of marketshare tallies for each service. This is the total number of hostnames/companies in the list associated with each service. Marketshare tallies are determined using a variety of methods including IP, ASN and hostname correlation. Related hostnames and CNAME chains are taken into account when tallying marketshare. The indeces in this array corresponds to the indeces in services.",
+          "required": true,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "marketshareChanges": {
+          "description": "The marketshare change for each service between this and the prior marketshare snapshot (if available). If unknown the values in this array will be null. The indeces in this array corresponds to the indeces in services.",
+          "required": true,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "percentages": {
+          "description": "The marketshare percentage for each service. This is the service tally divided by the list size. The indeces in this array corresponds to the indeces in services.",
+          "required": true,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "ranks": {
+          "description": "The ranking of each service based on all of the services of this type and list that we track marketshare for. A value of 1 is the highest ranking service. The indeces in this array corresponds to the indeces in services.",
+          "required": true,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "serviceType": {
+          "description": "The type of cloud service this marketshare snapshot pertains to (e.g. CDN, DNS)",
+          "required": true,
+          "enum": ["compute", "storage", "cdn", "dns", "paas", "dbaas"],
+          "type": "string"
+        },
+        "services": {
+          "description": "Array of services (service IDs) for each marketshare tally. The indeces in this array corresponds to the indeces in marketshare, marketshareChanges, percentages and ranks.",
+          "required": true,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "servicesIncluded": {
+          "description": "The total number of services included in this snapshot. This is also the upper limit on marketshare ranks.",
+          "required": true,
+          "type": "integer"
+        },
+        "snapshotDate": {
+          "description": "The date that the marketshare snapshot was taken",
+          "required": true,
+          "format": "date",
+          "type": "string"
+        }
+      }
+    },
+    "CH_NetworkTestParams": {
+      "id": "CH_NetworkTestParams",
+      "description": "Parameters for network testing - based on definition of CloudHarmony web probes",
+      "required": [
+      ],
+      "properties": {
+        "test_endpoint": {
+          "description": "One or more test endpoints",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "test_location": {
+          "description": "One or more test locations",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "test_provider": {
+          "description": "One or more test provider names",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "test_provider_id": {
+          "description": "One or more test provider IDs",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "test_region": {
+          "description": "One or more test service regions",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "test_service": {
+          "description": "One or more test service names",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "test_service_id": {
+          "description": "One or more test service IDs",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "test_service_type": {
+          "description": "One or more test service types",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      }
+    },
+    "Platform_Properties": {
+      "id": "Platform_Properties",
+      "description": "Represents the unique features, properties and pricing associated with a platform-as-a-service (PaaS)",
+      "required": [
+        "currency",
+        "platformId",
+        "serviceId"
+      ],
+      "properties": {
+        "apiRestricted": {
+          "description": "Are language APIs or libraries restricted, limited or customized (e.g. restricted networking API access)?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "autoFailover": {
+          "description": "Does the platform support automatic failover if an application (VM based) or process (process based) host fails?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "autoScaling": {
+          "description": "Does service support autoscaling. For process based platforms this signifies an automatic increase in the number of processes when demand increases. For VM based platforms, this signifies automatic increase in VM resource allocation.",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "currency": {
+          "description": "The currency the platform pricing is based on",
+          "required": true,
+          "enum": ["USD", "GBP", "EUR", "AUD", "CAD", "NZD", "PLN", "CHF", "JPY"],
+          "type": "string"
+        },
+        "instanceTypeNames": {
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "instanceTypes": {
+          "description": "For VM based platforms only - the instance types supported by this platform service. Each value is a unique instance type identifier that either the provider or we have defined",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "platformId": {
+          "description": "Identifier for this platform - same as Service ID",
+          "required": true,
+          "type": "string"
+        },
+        "priceMonthly": {
+          "description": "Flat monthly fee for use of this platform (in addition to process or VM based charges)",
+          "required": false,
+          "type": "number"
+        },
+        "processBased": {
+          "description": "Process based platforms deploy applications using on-demand or dedicated processes (may also be referred to as workers, threads or another name). Each process generally runs in an isolated container that provides memory, (ephemeral) storage and CPU capacity. Multiple processes for the same application may run on different hosts. While process based platforms are often more constrained than VM based platforms (e.g. ephemeral storage, API limitations), they often provide better scalability and fault tolerance",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "processName": {
+          "description": "The name or term used by the provider to refer to platform processes (e.g. dyno, worker - only applicable to process based platforms)",
+          "required": false,
+          "type": "string"
+        },
+        "processPricing": {
+          "description": "Pricing for platform processes (for process based platforms - VM based platforms use compute instance pricing)",
+          "required": false,
+          "items": {
+            "type": "Platform_Pricing"
+          },
+          "type": "array"
+        },
+        "processStorageEphemeral": {
+          "description": "Is process storage erased when a platform process ends (only applicable to process based platforms)?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "selfHostable": {
+          "description": "Does the provider offer a self hostable option that simulates/duplicates the platform features and functionality, whereby users can deploy applications to other infrastructure (only applicable to process based platforms)?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "serviceId": {
+          "description": "ID of the cloud service this record is associated with",
+          "required": true,
+          "type": "string"
+        },
+        "sslCustomDomainIp": {
+          "description": "Does the provider support standard SSL certificates for custom domains (requires a dedicated IP address)?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "sslCustomDomainSni": {
+          "description": "Does the provider support SNI SSL certificates for custom domains (SNI certificates allow multiple custom domains to be hosted from a single IP address)",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "sslGenericDomain": {
+          "description": "Does the service support SSL via a generic provider domain?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "sslIpPrice": {
+          "description": "The monthly price for standard custom domain SSL certificates - if supported (dedicated IP address)",
+          "required": false,
+          "type": "number"
+        },
+        "sslSniPrice": {
+          "description": "The monthly price for SNI custom domain SSL certificates - if supported",
+          "required": false,
+          "type": "number"
+        },
+        "supportedDatabases": {
+          "description": "Databases supported for applications deployed to this platform",
+          "required": false,
+          "enum": ["couchdb", "mongodb", "mssql", "mysql", "oracle", "postgresql", "other-nosql", "other-rdbms", "redis"],
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "supportedLanguages": {
+          "description": "Programming languages supported for applications deployed to this platform",
+          "required": false,
+          "enum": ["any", "c", "clojure", "erlang", "go", "java", "net", "node", "perl", "php", "python", "ruby", "scala"],
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "vmBased": {
+          "description": "VM based platforms facilitate deployment and management of applications on platform VM instances where they run similar to a VM/virtual host type environment. Generally, libraries and APIs, storage access and other functionality will be similar to self hosting, but the provider will configure and maintain platform VMs. Users typically have limited or no user login access. VM based platforms often do not offer autoscaling and failover capabilities because applications are deployed to a specific VM and if that VM fails, the applications running on it will also fail.",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        }
+      }
+    },
+    "Platform_Pricing": {
+      "id": "Platform_Pricing",
+      "description": "Represents pricing for a process based platform-as-a-service (PaaS)",
+      "required": [
+        "freeProcesses",
+        "price",
+        "priceInterval",
+        "processType"
+      ],
+      "properties": {
+        "comment": {
+          "description": "Comment about this pricing from CloudHarmony",
+          "required": false,
+          "type": "string"
+        },
+        "cpu": {
+          "description": "The amount of CPU resources allocated to each process at this pricing tier (if provider offers a description of CPU resources - only applicable to process based platforms)",
+          "required": false,
+          "type": "string"
+        },
+        "freeProcesses": {
+          "description": "The number of processes included with this platform pricing tier",
+          "required": true,
+          "type": "integer"
+        },
+        "memory": {
+          "description": "The amount of memory available to each process in megabytes at this pricing tier (may be a soft limit - only applicable to process based platforms)",
+          "required": false,
+          "type": "integer"
+        },
+        "name": {
+          "description": "The name for this pricing",
+          "required": false,
+          "type": "string"
+        },
+        "price": {
+          "description": "The price charged for each process and price interval",
+          "required": true,
+          "type": "number"
+        },
+        "priceInterval": {
+          "description": "The time interval applied to price - the amount designated by price is charged for each process and occurence of this time interval",
+          "required": true,
+          "defaultValue": "hour",
+          "enum": ["hour", "day", "month", "year", "minute", "second"],
+          "type": "string"
+        },
+        "processName": {
+          "description": "The name or term used by the provider to refer to platform processes (e.g. dyno, worker, service instance)",
+          "required": false,
+          "type": "string"
+        },
+        "processType": {
+          "description": "The type of process this pricing pertains to - backend, frontend or all",
+          "required": true,
+          "defaultValue": "all",
+          "enum": ["all", "backend", "frontend"],
+          "type": "string"
+        },
+        "reservePrice": {
+          "description": "An optional discounted price for reserved processes - applicable when provider offers autoscaling and customer commits to maintain and pay for a full time process",
+          "required": false,
+          "type": "number"
+        },
+        "storage": {
+          "description": "The amount of storage available to each process in GB at this pricing tier - 0 for none, -1 for unlimited or unknown. Process storage is generally ephemeral and coupled to a specific process (only applicable to process based platforms)",
+          "required": false,
+          "type": "number"
+        },
+        "updated": {
+          "required": false,
+          "type": "string"
+        }
+      }
+    },
+    "SearchRecord": {
+      "id": "SearchRecord",
+      "description": "Represents a single cloud offering - one of: compute instance type, service region, service, provider, or service type",
+      "required": [
+      ],
+      "properties": {
+        "id": {
+          "description": "The identifier for this search record - one of: [service ID]-[instance type], [service ID]-[region], [service ID], [provider ID] or [service type]",
+          "required": false,
+          "type": "string"
+        },
+        "name": {
+          "description": "Name for the search record - one of: [service name] - [instance type], [service name] - [region], [service name], [provider name] or [service type]",
+          "required": false,
+          "type": "string"
+        },
+        "providerId": {
+          "description": "Optional provider ID this search record pertains to. Set for all record types except service_type",
+          "required": false,
+          "type": "string"
+        },
+        "region": {
+          "description": "Optional region this search record pertains to. Set for service_region records only",
+          "required": false,
+          "type": "string"
+        },
+        "serviceId": {
+          "description": "Optional service ID this search record pertains to. Set for all record types except service_type and provider",
+          "required": false,
+          "type": "string"
+        },
+        "serviceTypes": {
+          "description": "Service types for this search record. For provider type records, this may contain multiple comma separated values for each service type offered",
+          "required": false,
+          "type": "string"
+        },
+        "type": {
+          "description": "The search record type - one of: compute_instance, provider, service, service_region or service_type",
+          "required": false,
+          "enum": ["compute_instance", "provider", "service", "service_region", "service_type"],
+          "type": "string"
+        },
+        "webProbes": {
+          "description": "Number of publicly accessible web probes for this search record",
+          "required": false,
+          "type": "integer"
+        }
+      }
+    },
+    "ServiceAvailability": {
+      "id": "ServiceAvailability",
+      "description": "Represents availability of a cloud service over a period of time",
+      "required": [
+        "availability",
+        "days",
+        "serviceId",
+        "start",
+        "stop"
+      ],
+      "properties": {
+        "availability": {
+          "description": "Availability of the cloud service for the designated time period represented as a percentage (e.g. 99.997)",
+          "required": true,
+          "type": "number"
+        },
+        "availabilityCalculated": {
+          "description": "Calculated availability of the cloud service for the designated time period represented as a percentage (e.g. 99.997)",
+          "required": false,
+          "type": "number"
+        },
+        "days": {
+          "description": "The number of days this availability metric represents. This may not be the same as the difference between start and stop if monitoring for this service began later. The availability metric is based on the difference betweens start and stop",
+          "required": true,
+          "type": "integer"
+        },
+        "downtime": {
+          "description": "The total downtime for the designated time interval in seconds",
+          "required": false,
+          "type": "number"
+        },
+        "downtimeScheduled": {
+          "description": "The scheduled downtime for the designated time interval in seconds",
+          "required": false,
+          "type": "number"
+        },
+        "outages": {
+          "description": "The total number of outages that occurred during the designated time period",
+          "required": false,
+          "type": "integer"
+        },
+        "outagesScheduled": {
+          "description": "The number of scheduled outages that occurred during the designated time period",
+          "required": false,
+          "type": "integer"
+        },
+        "partial": {
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "region": {
+          "description": "For CDN and DNS (distributed) services - this attribute represents the geographical region where the monitoring agents reside. For other cloud services it represents the service region (data center) that the availability metric pertains to",
+          "required": false,
+          "type": "string"
+        },
+        "serviceId": {
+          "description": "The ID of the service this availability metric pertains to",
+          "required": true,
+          "type": "string"
+        },
+        "start": {
+          "description": "The exact start time for this availability metric",
+          "required": true,
+          "type": "string"
+        },
+        "stop": {
+          "description": "The exact stop time for this availability metric",
+          "required": true,
+          "type": "string"
+        }
+      }
+    },
+    "BandwidthPricing": {
+      "id": "BandwidthPricing",
+      "description": "Used to describe bandwidth pricing for a cloud service including ingress and egress Internet bandwidth and tiered pricing models",
+      "required": [
+        "currency"
+      ],
+      "properties": {
+        "billingRegions": {
+          "description": "Some services charge differently for bandwidth depending on your billing address (e.g. HP Cloud CDN). If this is the case, this attribute represents the billing address geographical regions this pricing pertains to",
+          "required": false,
+          "enum": ["us", "ca", "america", "america_north", "america_central", "america_central_south", "america_south", "eu", "eu_africa", "asia", "jp", "sg", "hk", "oceania", "africa", "in", "cn"],
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "comment": {
+          "description": "Our comments about this bandwidth pricing",
+          "required": false,
+          "type": "string"
+        },
+        "currency": {
+          "description": "Currency the pricing is based on",
+          "required": true,
+          "defaultValue": "USD",
+          "enum": ["USD", "GBP", "EUR", "AUD", "CAD", "NZD", "PLN", "CHF", "JPY"],
+          "type": "string"
+        },
+        "endpointRegions": {
+          "description": "Some services price differently based on where the bandwidth goes to or comes from. This method of pricing often applies to distributed services - CDN and DNS. If bandwidth is priced in this way, this attribute designates which geographical endpoint regions this pricing pertains to",
+          "required": false,
+          "enum": ["us", "ca", "america", "america_north", "america_central", "america_central_south", "america_south", "eu", "eu_africa", "asia", "jp", "sg", "hk", "oceania", "africa", "in", "cn"],
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "pricingTiers": {
+          "description": "An array of sub-objects that describe the bandwidth pricing. If pricing is tiered or priced differently between ingress and egress, multiple sub-objects will be present in this attribute. The sub-objects in this array will be sorted by 'cap' or 'price' in ascending order",
+          "required": false,
+          "items": {
+            "type": "BandwidthPricingTier"
+          },
+          "type": "array"
+        },
+        "regions": {
+          "description": "Bandwidth pricing for services is sometimes different depending on the region where the service is provisioned in. If bandwidth is priced in this way, this attribute designates the provider regions this pricing pertains to. For a CDN, if this attribute is set, it signifies the POPs (points of presence) the pricing pertains to",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "regionsExcluded": {
+          "description": "Similar to the 'regions' attribute but designates provider regions this pricing is excluded from. For a CDN, if this attribute is set, it signifies the POPs (points of presence) the pricing does not pertain to",
+          "required": false,
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      }
+    },
+    "BandwidthPricingTier": {
+      "id": "BandwidthPricingTier",
+      "description": "Used to describe a single bandwidth pricing tier. Often bandwidth pricing consist of multiple tiers",
+      "required": [
+        "egress",
+        "ingress",
+        "interRegion",
+        "internet",
+        "intraRegion",
+        "intraSubRegion"
+      ],
+      "properties": {
+        "cap": {
+          "description": "Used for tiered bandwidth pricing models - the maximum bandwidth in gigabytes per month that this pricing tier pertains to. If bandwidth exceeds this cap, the next higher tier will be used. If this attribute is not set, this pricing is for the highest usage tier. Tiered bandwidth pricing is ordered on this attribute",
+          "required": false,
+          "type": "number"
+        },
+        "capText": {
+          "description": "Label for the 'cap' attribute (e.g. 10 TB)",
+          "required": false,
+          "type": "string"
+        },
+        "cdnEdgeStorage": {
+          "description": "For CDN services that bundle bandwidth and edge storage - the amount of edge storage (gigabytes) included with this bandwidth pricing tier",
+          "required": false,
+          "type": "integer"
+        },
+        "cdnZonesIncluded": {
+          "description": "For CDN services that bundle bandwidth and zones - the number of zones included with this bandwidth pricing tier",
+          "required": false,
+          "type": "integer"
+        },
+        "cdnZonesPrice": {
+          "description": "For CDN services that charge extra for zones (when the number of zones exceeds CDN Zones Includes) - the cost for additional zones",
+          "required": false,
+          "type": "number"
+        },
+        "cdnZonesPriceInterval": {
+          "description": "The billing frequency for the additional CDN zones price (if not set, Price Interval assumed)",
+          "required": false,
+          "enum": ["hour", "day", "month", "year", "minute", "second"],
+          "type": "string"
+        },
+        "comment": {
+          "description": "Our own comments about this bandwidth pricing tier",
+          "required": false,
+          "type": "string"
+        },
+        "egress": {
+          "description": "Does this pricing tier apply to egress/outbound bandwidth?",
+          "required": true,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "gbIncluded": {
+          "description": "If this pricing tier is for a fixed recurring amount (e.g. $10/month) - this attribute designates the number of gigabytes included during each Price Interval for 'price'. If your bandwidth exceeds this amount, Price Per GB would be charged for overage",
+          "required": false,
+          "type": "integer"
+        },
+        "ingress": {
+          "description": "Does this pricing tier apply to ingress/inbound bandwidth?",
+          "required": true,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "interRegion": {
+          "description": "Does this pricing tier apply to inter-region bandwidth (i.e. bandwidth between provider regions)?",
+          "required": true,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "internet": {
+          "description": "Does this pricing tier apply to Internet bandwidth (i.e. bandwidth that leaves the provider's network)?",
+          "required": true,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "intraRegion": {
+          "description": "Does this pricing tier apply to intra-region bandwidth (i.e. bandwidth that stays within a provider region)?",
+          "required": true,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "intraSubRegion": {
+          "description": "Does this pricing tier apply to intra-subregion/availability zone bandwidth (i.e. bandwidth that stays within a provider sub-region or availability zone)?",
+          "required": true,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "normalizedPrice": {
+          "description": "If this pricing tier is for a fixed recurring amount - this is the derived per GB price for bandwidth (i.e. price/gbIncluded)",
+          "required": false,
+          "type": "number"
+        },
+        "price": {
+          "description": "If this pricing tier is for a fixed recurring amount - this designates the recurring price for every priceInterval. If set gbIncluded designates the number gigabytes included for this price",
+          "required": false,
+          "type": "number"
+        },
+        "priceInterval": {
+          "description": "If this pricing tier is for a fixed recurring amount - this designates the frequency that price will be charged",
+          "required": false,
+          "enum": ["hour", "day", "month", "year", "minute", "second"],
+          "type": "string"
+        },
+        "pricePer10kRequest": {
+          "description": "If an additional charge is assessed per HTTP request, this designates what that charge is per 10,000 requests",
+          "required": false,
+          "type": "number"
+        },
+        "pricePer10kRequestHttps": {
+          "description": "If an additional charge is assessed per HTTPS request, this designates what that charge is per 10,000 requests",
+          "required": false,
+          "type": "number"
+        },
+        "pricePerGB": {
+          "description": "The price per gigabyte of bandwidth. If this pricing tier is for a fixed recurring amount (i.e. the 'price' attribute is set), this designates the cost for bandwidth exceeding gigabytes includes. If neither 'price' nor this attribute are set, pricing is not disclosed (contact the provider for pricing)",
+          "required": false,
+          "type": "number"
+        }
+      }
+    },
+    "NetworkIdentifier": {
+      "id": "NetworkIdentifier",
+      "description": "Describes an identifier for a service network. This is an IP/CIDR, CNAME, ASN, ISP or some other network related value that may be used to associated a service to an network IP or hostname",
+      "required": [
+        "identifier",
+        "providerId",
+        "serviceId",
+        "type"
+      ],
+      "properties": {
+        "city": {
+          "description": "City associated with the service region this identifier pertains to (if known)",
+          "required": false,
+          "type": "string"
+        },
+        "country": {
+          "description": "Country associated with the service region this identifier pertains to (if known)",
+          "required": false,
+          "enum": ["AF", "AP", "AX", "AL", "DZ", "AS", "AD", "AO", "AI", "AQ", "AG", "AR", "AM", "AW", "AU", "AT", "AZ", "BS", "BH", "BD", "BB", "BY", "BE", "BZ", "BJ", "BM", "BT", "BO", "BA", "BW", "BV", "BR", "IO", "BN", "BG", "BF", "BI", "KH", "CM", "CA", "CV", "KY", "CF", "TD", "CL", "CN", "CX", "CC", "CO", "KM", "CG", "CD", "CK", "CR", "CI", "HR", "CU", "CY", "CZ", "DK", "DJ", "DM", "DO", "TP", "EC", "EG", "SV", "GQ", "ER", "EE", "ET", "EU", "FK", "FO", "FJ", "FI", "FR", "FX", "GF", "PF", "TF", "GA", "GM", "GE", "DE", "GH", "GI", "GR", "GL", "GD", "GP", "GU", "GT", "GG", "GN", "GW", "GY", "HT", "HM", "VA", "HN", "HK", "HU", "IS", "IN", "ID", "IR", "IQ", "IE", "IM", "IL", "IT", "JM", "JP", "JE", "JO", "KZ", "KE", "KI", "KP", "KR", "KW", "KG", "LA", "LV", "LB", "LS", "LR", "LY", "LI", "LT", "LU", "MO", "MK", "MG", "MW", "MY", "MV", "ML", "MT", "MH", "MQ", "MR", "MU", "YT", "MX", "FM", "MD", "ME", "MC", "MN", "MS", "MA", "MZ", "MM", "NA", "NR", "NP", "NL", "AN", "NC", "NZ", "NI", "NE", "NG", "NU", "NF", "MP", "NO", "OM", "PK", "PW", "PS", "PA", "PG", "PY", "PE", "PH", "PN", "PL", "PT", "PR", "QA", "RE", "RO", "RU", "RW", "KN", "LC", "VC", "WS", "SM", "ST", "SA", "SN", "RS", "SC", "SL", "SG", "SK", "SI", "SB", "SO", "ZA", "GS", "ES", "LK", "BL", "SH", "PM", "SD", "SR", "SJ", "SZ", "SE", "CH", "SY", "TW", "TJ", "TZ", "TH", "TL", "TG", "TK", "TO", "TT", "TN", "TR", "TM", "TC", "TV", "UG", "UA", "AE", "GB", "US", "UM", "UY", "UZ", "VU", "VE", "VN", "VG", "VI", "WF", "EH", "YE", "YU", "ZM", "ZW"],
+          "type": "string"
+        },
+        "fromConfig": {
+          "description": "Did this identifier come from an explicit configuration or was it dynamically generated from known hostnames/IP addresses",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "identifier": {
+          "description": "The network identifier value. How this is used to make service associations will depend on the type. For CNAME type identifiers this value may be a regular expression if enclosed by forward slash. For ISP and ORG type identifiers this value is based on the MaxMind IP database",
+          "required": true,
+          "type": "string"
+        },
+        "providerId": {
+          "description": "The ID of the provider this identifier pertains to",
+          "required": true,
+          "type": "string"
+        },
+        "region": {
+          "description": "Optional region - set if this identifier is specific to a particular service region",
+          "required": false,
+          "type": "string"
+        },
+        "serviceId": {
+          "description": "ID of the service thid network identifier pertains to",
+          "required": true,
+          "type": "string"
+        },
+        "serviceType": {
+          "description": "The type of service this network identifier pertains to",
+          "required": false,
+          "enum": ["compute", "storage", "cdn", "dns", "paas", "dbaas"],
+          "type": "string"
+        },
+        "skip": {
+          "description": "Skip correlations based on this network identifier",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "state": {
+          "description": "State/province associated with the service region this identifier pertains to (if known)",
+          "required": false,
+          "type": "string"
+        },
+        "type": {
+          "description": "The type of network identifier this is - either an IP + CIDR, DNS name servers, CNAME fragment, ASN, ISP or organization name",
+          "required": true,
+          "enum": ["ip", "cname", "dns", "org", "isp", "asn"],
+          "type": "string"
+        }
+      }
+    },
+    "ServiceOutage": {
+      "id": "ServiceOutage",
+      "description": "Represents the data associated with a service outage",
+      "required": [
+        "serviceId",
+        "start"
+      ],
+      "properties": {
+        "downtime": {
+          "description": "The total downtime for this outage in seconds",
+          "required": false,
+          "type": "integer"
+        },
+        "excludeFromAvailability": {
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "logs": {
+          "description": "Optional logs/comments about this outage from the provider or us",
+          "required": false,
+          "items": {
+            "type": "ServiceOutageLog"
+          },
+          "type": "array"
+        },
+        "notified": {
+          "description": "Has vendor been notified about the outage?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "region": {
+          "description": "For CDN and DNS (distributed) services - this attribute represents the geographical region where the outage occurred. For other cloud services it represents the service region (data center) that the outage pertains to",
+          "required": false,
+          "type": "string"
+        },
+        "resolved": {
+          "description": "Has this outage been resolved or is it still ongoing?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "serviceId": {
+          "description": "The ID of the service this outage pertains to",
+          "required": true,
+          "type": "string"
+        },
+        "start": {
+          "description": "When this outage started",
+          "required": true,
+          "type": "string"
+        },
+        "stop": {
+          "description": "When this outage ended",
+          "required": false,
+          "type": "string"
+        }
+      }
+    },
+    "ServiceOutageLog": {
+      "id": "ServiceOutageLog",
+      "description": "Represents a single log or comment for an outage from the provider or us",
+      "required": [
+      ],
+      "properties": {
+        "entry": {
+          "description": "The comment for this outage log",
+          "required": false,
+          "type": "string"
+        },
+        "timestamp": {
+          "description": "When this outage log was created",
+          "required": false,
+          "type": "string"
+        }
+      }
+    },
+    "ServiceRegion": {
+      "id": "ServiceRegion",
+      "description": "Represents a geographical location where a cloud provider maintains infrastructure for cloud services (e.g. location of a compute region or CDN PoP)",
+      "required": [
+        "country",
+        "facilities",
+        "locationLat",
+        "locationLong",
+        "providerCode"
+      ],
+      "properties": {
+        "city": {
+          "description": "City where this region is located",
+          "required": false,
+          "type": "string"
+        },
+        "country": {
+          "description": "Country where this region is located (ISO 3166 country codes use - e.g. US)",
+          "required": true,
+          "enum": ["AF", "AP", "AX", "AL", "DZ", "AS", "AD", "AO", "AI", "AQ", "AG", "AR", "AM", "AW", "AU", "AT", "AZ", "BS", "BH", "BD", "BB", "BY", "BE", "BZ", "BJ", "BM", "BT", "BO", "BA", "BW", "BV", "BR", "IO", "BN", "BG", "BF", "BI", "KH", "CM", "CA", "CV", "KY", "CF", "TD", "CL", "CN", "CX", "CC", "CO", "KM", "CG", "CD", "CK", "CR", "CI", "HR", "CU", "CY", "CZ", "DK", "DJ", "DM", "DO", "TP", "EC", "EG", "SV", "GQ", "ER", "EE", "ET", "EU", "FK", "FO", "FJ", "FI", "FR", "FX", "GF", "PF", "TF", "GA", "GM", "GE", "DE", "GH", "GI", "GR", "GL", "GD", "GP", "GU", "GT", "GG", "GN", "GW", "GY", "HT", "HM", "VA", "HN", "HK", "HU", "IS", "IN", "ID", "IR", "IQ", "IE", "IM", "IL", "IT", "JM", "JP", "JE", "JO", "KZ", "KE", "KI", "KP", "KR", "KW", "KG", "LA", "LV", "LB", "LS", "LR", "LY", "LI", "LT", "LU", "MO", "MK", "MG", "MW", "MY", "MV", "ML", "MT", "MH", "MQ", "MR", "MU", "YT", "MX", "FM", "MD", "ME", "MC", "MN", "MS", "MA", "MZ", "MM", "NA", "NR", "NP", "NL", "AN", "NC", "NZ", "NI", "NE", "NG", "NU", "NF", "MP", "NO", "OM", "PK", "PW", "PS", "PA", "PG", "PY", "PE", "PH", "PN", "PL", "PT", "PR", "QA", "RE", "RO", "RU", "RW", "KN", "LC", "VC", "WS", "SM", "ST", "SA", "SN", "RS", "SC", "SL", "SG", "SK", "SI", "SB", "SO", "ZA", "GS", "ES", "LK", "BL", "SH", "PM", "SD", "SR", "SJ", "SZ", "SE", "CH", "SY", "TW", "TJ", "TZ", "TH", "TL", "TG", "TK", "TO", "TT", "TN", "TR", "TM", "TC", "TV", "UG", "UA", "AE", "GB", "US", "UM", "UY", "UZ", "VU", "VE", "VN", "VG", "VI", "WF", "EH", "YE", "YU", "ZM", "ZW"],
+          "type": "string"
+        },
+        "estimated": {
+          "description": "true if the location of this region is estimated (some providers do no disclose exact locations)",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "facilities": {
+          "description": "The number of facilities (i.e. availability zones or POPs) in this region",
+          "required": true,
+          "defaultValue": 1,
+          "type": "integer"
+        },
+        "locationLat": {
+          "description": "Latitude (approximate) of this region",
+          "required": true,
+          "type": "number"
+        },
+        "locationLong": {
+          "description": "Longitude (approximate) of this region",
+          "required": true,
+          "type": "number"
+        },
+        "notes": {
+          "description": "Notes we've compiled about this region",
+          "required": false,
+          "type": "string"
+        },
+        "planned": {
+          "description": "Is this a planned region (not currently live)?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "providerCode": {
+          "description": "The identifier we use to reference this region in benchmarks. We generally use the same identifiers as the provider if they use them (e.g. us-east-1)",
+          "required": true,
+          "type": "string"
+        },
+        "regions": {
+          "description": "Identifiers of the geographical regions this service region pertains to",
+          "required": false,
+          "enum": ["us", "us_northeast", "us_northeast_newengland", "us_northeast_midatlantic", "us_midwest", "us_midwest_eastnorthcentral", "us_midwest_westnorthcentral", "us_south", "us_south_southatlantic", "us_south_eastsouthcentral", "us_south_westsouthcentral", "us_west", "us_west_mountain", "us_west_pacific", "us_east", "us_central", "ca", "usca", "eu", "eu_north", "eu_west", "eu_central", "eu_east", "eu_south", "eu_africa", "asia", "asia_apac", "asia_east", "asia_centralwest", "asia_southeast", "asia_south", "jp", "oceania", "in", "america", "america_north", "america_central", "america_central_south", "america_south", "africa", "global"],
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "special": {
+          "description": "true if access to or use of this region is restricted or limited - for example, AWS GovCloud",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "state": {
+          "description": "State or province where this region is located (US or Canada)",
+          "required": false,
+          "type": "string"
+        }
+      }
+    },
+    "ServiceStatus": {
+      "id": "ServiceStatus",
+      "description": "Represents the current availability status of a cloud service",
+      "required": [
+        "serviceId",
+        "status"
+      ],
+      "properties": {
+        "checked": {
+          "description": "When the service status was last checked",
+          "required": false,
+          "type": "string"
+        },
+        "downSince": {
+          "description": "If the service is down, this represents the time when the downtime began",
+          "required": false,
+          "type": "string"
+        },
+        "region": {
+          "description": "The service region this status represents. For CDN and DNS this signifies the monitoring location (global, us_west, us_central, us_east, eu, asia, oceania or africa). For other services it represents the service region being monitored.",
+          "required": false,
+          "type": "string"
+        },
+        "serviceId": {
+          "description": "The identifier of the service this status pertains to",
+          "required": true,
+          "type": "string"
+        },
+        "status": {
+          "description": "The current service status",
+          "required": true,
+          "enum": ["up", "down", "maintenance", "partial"],
+          "type": "string"
+        }
+      }
+    },
+    "Storage_Properties": {
+      "id": "Storage_Properties",
+      "description": "Represents the unique properties, features and pricing for a storage service",
+      "required": [
+        "currency",
+        "name"
+      ],
+      "properties": {
+        "block": {
+          "description": "Does this storage support block level access (i.e. mounting drives)",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "comment": {
+          "description": "Comment about this storage service from CloudHarmony",
+          "required": false,
+          "type": "string"
+        },
+        "computeOptionId": {
+          "description": "For block storage services - identifier used to reference this storage service when used in conjunction with a compute instance for benchmarking. If the storage service supports provisioned IOPS, this identifier may contain an optional dynamic string {iops} for the number of IOPS actually provisioned",
+          "required": false,
+          "type": "string"
+        },
+        "computePrice": {
+          "description": "For block storage services - optional price added (based on the price interval specified) to compute instances for use of this storage service",
+          "required": false,
+          "type": "number"
+        },
+        "computeServiceId": {
+          "description": "For block storage services - compute service that this storage service may be used by",
+          "required": false,
+          "type": "string"
+        },
+        "computeThroughput": {
+          "description": "For block storage services - the throughput capacity (megabits/sec) between compute instances and the storage platform - if provider discloses this information",
+          "required": false,
+          "type": "integer"
+        },
+        "currency": {
+          "description": "The currency any service pricing is based on",
+          "required": true,
+          "defaultValue": "USD",
+          "enum": ["USD", "GBP", "EUR", "AUD", "CAD", "NZD", "PLN", "CHF", "JPY"],
+          "type": "string"
+        },
+        "diskRpm": {
+          "description": "Spindle RPM speed of the hard disks used by the provider for this storage service - if the provider discloses this information",
+          "required": false,
+          "type": "integer"
+        },
+        "diskType": {
+          "description": "Type of hard disks used by the provider for this storage service - if the provider discloses this information",
+          "required": false,
+          "enum": ["sata", "sas", "ssd", "scsi", "pcie"],
+          "type": "string"
+        },
+        "geoReplicas": {
+          "description": "Does the service make geographically disperse replicas of data stored within this storage service - if the provider discloses this information",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "instanceIds": {
+          "description": "For block storage services assocated with a compute service - if this storage service is limited to a subset of the compute instance types, these are the instance IDs of those types (one instance ID per line) - regular expressions are ok (e.g. /vmware$/)",
+          "required": false,
+          "type": "string"
+        },
+        "iopsBlockSize": {
+          "description": "For block storage services - the block size in kilobytes that the IOPS values (Max IOPS and Price Per Provisioned IOPs) are based on (e.g. 16KB)",
+          "required": false,
+          "type": "integer"
+        },
+        "maxIops": {
+          "description": "For block storage services - the maximum number of IOPS supported for the storage service and compute instance - if provisioned IOPs is supported, this is the max number of IOPs that may be provisioned",
+          "required": false,
+          "type": "integer"
+        },
+        "maxVolumeSize": {
+          "description": "For block storage services - the maximum size per volume in terrebytes (if limited by the provider)",
+          "required": false,
+          "type": "number"
+        },
+        "maxVolumes": {
+          "description": "For block storage services - the maximum number of distinct volumes that can be attached (if limited by the provider)",
+          "required": false,
+          "type": "integer"
+        },
+        "maxVolumesWindows": {
+          "description": "For block storage services - the maximum number of distinct volumes that can be attached specifically to Windows compute instances (specified only if different for Windows compared to other operating systems)",
+          "required": false,
+          "type": "integer"
+        },
+        "name": {
+          "description": "Name for this storage service",
+          "required": true,
+          "type": "string"
+        },
+        "normalizedComputePrice": {
+          "description": "Compute Price normalized to an hourly rate",
+          "required": false,
+          "type": "number"
+        },
+        "object": {
+          "description": "Does this storage support object based access (i.e. API access)",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "priceInterval": {
+          "description": "The time interval for the compute price - the amount designated by the compute price is charged for each occurence of this time interval",
+          "required": false,
+          "enum": ["hour", "day", "month", "year", "minute", "second"],
+          "type": "string"
+        },
+        "pricePer10kArchive": {
+          "description": "For object storage services - price per 10,000 Archive requests - for archival storage services only, empty if not supported",
+          "required": false,
+          "type": "number"
+        },
+        "pricePer10kCopy": {
+          "description": "For object storage services - price per 10,000 COPY requests - empty if not supported",
+          "required": false,
+          "type": "number"
+        },
+        "pricePer10kDelete": {
+          "description": "For object storage services - price per 10,000 DELETE requests",
+          "required": false,
+          "type": "number"
+        },
+        "pricePer10kGet": {
+          "description": "For object storage services - price per 10,000 GET requests",
+          "required": false,
+          "type": "number"
+        },
+        "pricePer10kHead": {
+          "description": "For object storage services - price per 10,000 HEAD requests",
+          "required": false,
+          "type": "number"
+        },
+        "pricePer10kList": {
+          "description": "For object storage services - price per 10,000 LIST requests",
+          "required": false,
+          "type": "number"
+        },
+        "pricePer10kOps": {
+          "description": "For object storage services - price per 10,000 operations regardless of type. Applicable for services that do not separate pricing based on type of operation - or for services that charge an additional operation charge",
+          "required": false,
+          "type": "number"
+        },
+        "pricePer10kPost": {
+          "description": "For object storage services - price per 10,000 POST requests",
+          "required": false,
+          "type": "number"
+        },
+        "pricePer10kPut": {
+          "description": "For object storage services - price per 10,000 PUT requests",
+          "required": false,
+          "type": "number"
+        },
+        "pricePer10kRetrieve": {
+          "description": "For object storage services - price per 10,000 Retrieve requests - for archival storage services only - blank if not supported",
+          "required": false,
+          "type": "number"
+        },
+        "pricePerGB": {
+          "description": "The price for storage usage per gigabyte for this service for each occurrence of the price interval - may be used in place of sub-pricing elements for simple (i.e. non-tiered) pricing models",
+          "required": false,
+          "type": "number"
+        },
+        "pricePerMillionIo": {
+          "description": "For block storage services - price per 1 million I/O operations (if provider charges based on IO)",
+          "required": false,
+          "type": "number"
+        },
+        "pricePerProvisionedIops": {
+          "description": "For block storage services with provisioned IOPS support - price per pre-provisioned IOPS based on the price interval",
+          "required": false,
+          "type": "number"
+        },
+        "pricePerSnapshotGB": {
+          "description": "For block storage services with snapshot support - price per gigabyte for volume snapshots (hot or cold) based on the price interval - only specify if different from regular storage pricing and/or from the storage pricing for the referenced Snapshot Storage Service",
+          "required": false,
+          "type": "number"
+        },
+        "pricing": {
+          "description": "Represents the possibly tiered pricing for storage usage",
+          "required": false,
+          "items": {
+            "type": "StoragePricingTier"
+          },
+          "type": "array"
+        },
+        "provisionedIops": {
+          "description": "For block storage services - does service support pre-provisioning/allocation of IOPS?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "raidLevel": {
+          "description": "Raid level used by the provider for this storage service - if the provider discloses this information",
+          "required": false,
+          "type": "integer"
+        },
+        "regions": {
+          "description": "If storage service/settings are specific provider regions, these are the identifiers of those regions (one region code per line)",
+          "required": false,
+          "type": "string"
+        },
+        "replicas": {
+          "description": "Does the service make locally replicas of data stored within this storage service - if the provider discloses this information?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "serviceId": {
+          "description": "ID of the storage service this record pertains to",
+          "required": false,
+          "type": "string"
+        },
+        "snapshotServiceId": {
+          "description": "For block storage services with snapshot support - optional ID of another storage service that volume snapshots are stored in",
+          "required": false,
+          "type": "string"
+        },
+        "snapshotsCold": {
+          "description": "For block storage services - does service support cold volume snapshots?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "snapshotsHot": {
+          "description": "For block storage services - does service support hot volume snapshots?",
+          "required": false,
+          "defaultValue": false,
+          "type": "boolean"
+        },
+        "storageServiceId": {
+          "description": "Unique identifier for the record - service ID followed by an optional dash and short identifier (if multiple for a given service)",
+          "required": false,
+          "type": "string"
+        }
+      }
+    },
+    "StoragePricingTier": {
+      "id": "StoragePricingTier",
+      "description": "Represents the cost of storage for a storage service based on an optional usage tier",
+      "required": [
+      ],
+      "properties": {
+        "cap": {
+          "description": "Maximum storage in gigabytes available at this price tier (if usage exceeds this amount, the next highest tier is used) - if empty, this is the highest usage tier",
+          "required": false,
+          "type": "number"
+        },
+        "capText": {
+          "description": "User friendly text for Cap (e.g. 450 TB)",
+          "required": false,
+          "type": "string"
+        },
+        "comment": {
+          "description": "Comment about this price tier from CloudHarmony",
+          "required": false,
+          "type": "string"
+        },
+        "includedGB": {
+          "description": "The amount of storage in gigabytes included for the Price at this usage tier",
+          "required": false,
+          "type": "integer"
+        },
+        "normalizedPrice": {
+          "description": "Price normalized to an hourly rate per TB",
+          "required": false,
+          "type": "number"
+        },
+        "price": {
+          "description": "Optional recurring price for this usage tier - this amount is charged for each occurrence of the Price Interval",
+          "required": false,
+          "type": "number"
+        },
+        "priceInterval": {
+          "description": "The time interval for prices in this record - the amount designated by the prices are charged for each occurence of this time interval",
+          "required": false,
+          "enum": ["hour", "day", "month", "year", "minute", "second"],
+          "type": "string"
+        },
+        "pricePerGB": {
+          "description": "The price of storage per gigabyte for this usage tier (or for overages if Price and GB Included are set) - if empty, pricing data is not disclosed (customers should contact the provider)",
+          "required": false,
+          "type": "number"
+        }
+      }
+    }
+  }
+}
